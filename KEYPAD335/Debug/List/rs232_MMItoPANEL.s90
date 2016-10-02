@@ -1,26 +1,24 @@
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                            /
-// IAR C/C++ Compiler V5.30.0.50166/W32 for Atmel AVR   31/Mar/2011  00:19:46 /
+// IAR C/C++ Compiler V5.30.0.50166/W32 for Atmel AVR   02/Apr/2011  02:41:23 /
 // Copyright 1996-2009 IAR Systems AB.                                        /
 //                                                                            /
-//    Source file  =  W:\work\SEOHO_VD\SEOHO_BISA\KEYPAD335_110328_IAR_BISA\s /
-//                    ource\mcu\rs232_MMItoPANEL.c                            /
-//    Command line =  W:\work\SEOHO_VD\SEOHO_BISA\KEYPAD335_110328_IAR_BISA\s /
-//                    ource\mcu\rs232_MMItoPANEL.c --cpu=m2560 -ms -o         /
-//                    W:\work\SEOHO_VD\SEOHO_BISA\KEYPAD335_110328_IAR_BISA\D /
-//                    ebug\Obj\ -lC W:\work\SEOHO_VD\SEOHO_BISA\KEYPAD335_110 /
-//                    328_IAR_BISA\Debug\List\ -lA                            /
-//                    W:\work\SEOHO_VD\SEOHO_BISA\KEYPAD335_110328_IAR_BISA\D /
-//                    ebug\List\ -y --initializers_in_flash -z3 --no_cse      /
-//                    --no_inline --no_code_motion --no_cross_call            /
-//                    --no_clustering --no_tbaa --debug                       /
-//                    --enable_external_bus -DENABLE_BIT_DEFINITIONS -e       /
-//                    --enable_multibytes -I "C:\Program Files\IAR            /
-//                    Systems\Embedded Workbench 5.3\avr\INC\" -I             /
+//    Source file  =  C:\KEYPAD335_110401_IAR_BISA\source\mcu\rs232_MMItoPANE /
+//                    L.c                                                     /
+//    Command line =  C:\KEYPAD335_110401_IAR_BISA\source\mcu\rs232_MMItoPANE /
+//                    L.c --cpu=m2560 -ms -o C:\KEYPAD335_110401_IAR_BISA\Deb /
+//                    ug\Obj\ -lC C:\KEYPAD335_110401_IAR_BISA\Debug\List\    /
+//                    -lA C:\KEYPAD335_110401_IAR_BISA\Debug\List\ -y         /
+//                    --initializers_in_flash -z3 --no_cse --no_inline        /
+//                    --no_code_motion --no_cross_call --no_clustering        /
+//                    --no_tbaa --debug --enable_external_bus                 /
+//                    -DENABLE_BIT_DEFINITIONS -e --enable_multibytes -I      /
 //                    "C:\Program Files\IAR Systems\Embedded Workbench        /
-//                    5.3\avr\INC\CLIB\" --eeprom_size 4096                   /
-//    List file    =  W:\work\SEOHO_VD\SEOHO_BISA\KEYPAD335_110328_IAR_BISA\D /
-//                    ebug\List\rs232_MMItoPANEL.s90                          /
+//                    5.3\avr\INC\" -I "C:\Program Files\IAR                  /
+//                    Systems\Embedded Workbench 5.3\avr\INC\CLIB\"           /
+//                    --eeprom_size 4096                                      /
+//    List file    =  C:\KEYPAD335_110401_IAR_BISA\Debug\List\rs232_MMItoPANE /
+//                    L.s90                                                   /
 //                                                                            /
 //                                                                            /
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,6 +37,8 @@
         RSEG CSTACK:DATA:NOROOT(0)
         RSEG RSTACK:DATA:NOROOT(0)
 
+        EXTERN ?EPILOGUE_B4_L09
+        EXTERN ?PROLOGUE4_L09
         EXTERN ?need_segment_init
         EXTERN __RSTACK_in_external_ram_new_way
 
@@ -76,6 +76,11 @@
         PUBLIC SCI_RequestData
         FUNCTION SCI_RequestData,021203H
         ARGFRAME RSTACK, 0, STACK
+        LOCFRAME RSTACK, 3, STACK
+        PUBLIC SCI_SendData
+        FUNCTION SCI_SendData,021203H
+        ARGFRAME CSTACK, 0, STACK
+        LOCFRAME CSTACK, 4, STACK
         LOCFRAME RSTACK, 3, STACK
         PUBLIC SCI_TxOffset
         PUBLIC SciC_RxFlag
@@ -237,7 +242,7 @@ USART0_TX_ISR       SYMBOL "USART0_TX_ISR"
         EXTERN TimeTic_500ms
         EXTERN gRequestAddr
 
-// W:\work\SEOHO_VD\SEOHO_BISA\KEYPAD335_110328_IAR_BISA\source\mcu\rs232_MMItoPANEL.c
+// C:\KEYPAD335_110401_IAR_BISA\source\mcu\rs232_MMItoPANEL.c
 //    1 //==============================================================================================
 //    2 //
 //    3 // Copyright(C) 2008 HanYoung ELEC. Co., LTD.
@@ -1839,11 +1844,163 @@ SCI_RequestData:
 //  341 
 
         RSEG FARCODE:CODE:NOROOT(1)
-//  342 void SCI_RegisterRefresh(void)
-SCI_RegisterRefresh:
+//  342 void SCI_SendData(unsigned int addr, unsigned int data)
+SCI_SendData:
         CFI Block cfiBlock8 Using cfiCommon0
-        CFI Function SCI_RegisterRefresh
+        CFI Function SCI_SendData
 //  343 {
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, CRC_16
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, CRC_16
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, CRC_16
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, CRC_16
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, CRC_16
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, CRC_16
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, CRC_16
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        FUNCALL SCI_SendData, TX0_char
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 3, STACK
+        ARGFRAME RSTACK, 0, STACK
+        CALL    ?PROLOGUE4_L09
+        CFI R27 Frame(CFA_Y, -1)
+        CFI R26 Frame(CFA_Y, -2)
+        CFI R25 Frame(CFA_Y, -3)
+        CFI R24 Frame(CFA_Y, -4)
+        CFI CFA_Y Y+4
+        REQUIRE __RSTACK_in_external_ram_new_way
+        MOVW    R25:R24, R17:R16
+        MOVW    R27:R26, R19:R18
+//  344 	CRC.Word = 0;
+        LDI     R16, 0
+        LDI     R17, 0
+        STS     CRC, R16
+        STS     (CRC + 1), R17
+//  345 	
+//  346 	
+//  347 	TX0_char(0xAB); 			CRC_16(0xAB);
+        LDI     R16, 171
+        RCALL   TX0_char
+        LDI     R16, 171
+        RCALL   CRC_16
+//  348 	TX0_char(0xCD); 			CRC_16(0xCD);
+        LDI     R16, 205
+        RCALL   TX0_char
+        LDI     R16, 205
+        RCALL   CRC_16
+//  349 	
+//  350 	TX0_char(SEND); 			CRC_16(SEND);
+        LDI     R16, 2
+        RCALL   TX0_char
+        LDI     R16, 2
+        RCALL   CRC_16
+//  351 	
+//  352 	TX0_char((char)(addr>>8));	CRC_16((char)(addr>>8));
+        MOVW    R17:R16, R25:R24
+        MOV     R16, R17
+        RCALL   TX0_char
+        MOVW    R17:R16, R25:R24
+        MOV     R16, R17
+        RCALL   CRC_16
+//  353 	TX0_char((char)addr);		CRC_16((char)addr);
+        MOV     R16, R24
+        RCALL   TX0_char
+        MOV     R16, R24
+        RCALL   CRC_16
+//  354 			
+//  355 	TX0_char((char)(data>>8));	CRC_16((char)(data>>8));
+        MOVW    R17:R16, R27:R26
+        MOV     R16, R17
+        RCALL   TX0_char
+        MOVW    R17:R16, R27:R26
+        MOV     R16, R17
+        RCALL   CRC_16
+//  356 	TX0_char((char)data);		CRC_16((char)data);
+        MOV     R16, R26
+        RCALL   TX0_char
+        MOV     R16, R26
+        RCALL   CRC_16
+//  357 	
+//  358 	TX0_char(CRC.Byte.b1);
+        LDS     R16, (CRC + 1)
+        RCALL   TX0_char
+//  359 	TX0_char(CRC.Byte.b0);
+        LDS     R16, CRC
+        RCALL   TX0_char
+//  360 
+//  361 	DATA_Registers[addr] = data;
+        LSL     R24
+        ROL     R25
+        MOVW    R31:R30, R25:R24
+        SUBI    R30, LOW((-(DATA_Registers) & 0xFFFF))
+        SBCI    R31, (-(DATA_Registers) & 0xFFFF) >> 8
+        ST      Z, R26
+        STD     Z+1, R27
+//  362 
+//  363 
+//  364 }
+        LDI     R30, 4
+        JMP     ?EPILOGUE_B4_L09
+        CFI EndBlock cfiBlock8
+//  365 
+
+        RSEG FARCODE:CODE:NOROOT(1)
+//  366 void SCI_RegisterRefresh(void)
+SCI_RegisterRefresh:
+        CFI Block cfiBlock9 Using cfiCommon0
+        CFI Function SCI_RegisterRefresh
+//  367 {
         FUNCALL SCI_RegisterRefresh, TX0_char
         LOCFRAME CSTACK, 2, STACK
         LOCFRAME RSTACK, 3, STACK
@@ -1915,13 +2072,13 @@ SCI_RegisterRefresh:
         CFI R24 Frame(CFA_Y, -2)
         CFI CFA_Y Y+2
         REQUIRE __RSTACK_in_external_ram_new_way
-//  344 	int i;
-//  345 	for(i=0;i<BUF_MAX;i++)
+//  368 	int i;
+//  369 	for(i=0;i<BUF_MAX;i++)
         LDI     R24, 0
         LDI     R25, 0
         RJMP    ??SCI_RegisterRefresh_0
-//  346 	{
-//  347 		DATA_Registers[i]=0;
+//  370 	{
+//  371 		DATA_Registers[i]=0;
 ??SCI_RegisterRefresh_1:
         LDI     R16, 0
         LDI     R17, 0
@@ -1933,7 +2090,7 @@ SCI_RegisterRefresh:
         SBCI    R31, (-(DATA_Registers) & 0xFFFF) >> 8
         ST      Z, R16
         STD     Z+1, R17
-//  348 		SCI_Registers[i]=0;
+//  372 		SCI_Registers[i]=0;
         LDI     R16, 0
         LDI     R17, 0
         MOVW    R19:R18, R25:R24
@@ -1944,77 +2101,77 @@ SCI_RegisterRefresh:
         SBCI    R31, (-(SCI_Registers) & 0xFFFF) >> 8
         ST      Z, R16
         STD     Z+1, R17
-//  349 	}
+//  373 	}
         ADIW    R25:R24, 1
 ??SCI_RegisterRefresh_0:
         CPI     R24, 72
         LDI     R16, 13
         CPC     R25, R16
         BRLT    ??SCI_RegisterRefresh_1
-//  350 
-//  351 	CRC.Word = 0;
+//  374 
+//  375 	CRC.Word = 0;
         LDI     R16, 0
         LDI     R17, 0
         STS     CRC, R16
         STS     (CRC + 1), R17
-//  352 	TX0_char(0xAB); 		CRC_16(0xAB);
+//  376 	TX0_char(0xAB); 		CRC_16(0xAB);
         LDI     R16, 171
         RCALL   TX0_char
         LDI     R16, 171
         RCALL   CRC_16
-//  353 	TX0_char(0xCD); 		CRC_16(0xCD);
+//  377 	TX0_char(0xCD); 		CRC_16(0xCD);
         LDI     R16, 205
         RCALL   TX0_char
         LDI     R16, 205
         RCALL   CRC_16
-//  354 	
-//  355 	TX0_char(SEND);		CRC_16(SEND);
+//  378 	
+//  379 	TX0_char(SEND);		CRC_16(SEND);
         LDI     R16, 2
         RCALL   TX0_char
         LDI     R16, 2
         RCALL   CRC_16
-//  356 	
-//  357 	TX0_char(0x0C);				CRC_16(0x0C);
+//  380 	
+//  381 	TX0_char(0x0C);				CRC_16(0x0C);
         LDI     R16, 12
         RCALL   TX0_char
         LDI     R16, 12
         RCALL   CRC_16
-//  358 	TX0_char(0x7B);				CRC_16(0x7B);
+//  382 	TX0_char(0x7B);				CRC_16(0x7B);
         LDI     R16, 123
         RCALL   TX0_char
         LDI     R16, 123
         RCALL   CRC_16
-//  359 	
-//  360 	TX0_char(0);				CRC_16(0);
+//  383 	
+//  384 	TX0_char(0);				CRC_16(0);
         LDI     R16, 0
         RCALL   TX0_char
         LDI     R16, 0
         RCALL   CRC_16
-//  361 	TX0_char(1);				CRC_16(1);
+//  385 	TX0_char(1);				CRC_16(1);
         LDI     R16, 1
         RCALL   TX0_char
         LDI     R16, 1
         RCALL   CRC_16
-//  362 	
-//  363 	TX0_char(CRC.Byte.b1);
+//  386 	
+//  387 	TX0_char(CRC.Byte.b1);
         LDS     R16, (CRC + 1)
         RCALL   TX0_char
-//  364 	TX0_char(CRC.Byte.b0);
+//  388 	TX0_char(CRC.Byte.b0);
         LDS     R16, CRC
         RCALL   TX0_char
-//  365 
-//  366 	DATA_Registers[0x0C7B]=1;
+//  389 
+//  390 	DATA_Registers[0x0C7B]=1;
         LDI     R16, 1
         LDI     R17, 0
         STS     (DATA_Registers + 6390), R16
         STS     (DATA_Registers + 6391), R17
-//  367 	SCI_Registers[0x0C7B]=0;
+//  391 	SCI_Registers[0x0C7B]=0;
         LDI     R16, 0
         LDI     R17, 0
         STS     (SCI_Registers + 6390), R16
         STS     (SCI_Registers + 6391), R17
-//  368 
-//  369 }
+//  392 
+//  393 }
         LD      R24, Y+
         CFI R24 SameValue
         CFI CFA_Y Y+1
@@ -2022,18 +2179,18 @@ SCI_RegisterRefresh:
         CFI R25 SameValue
         CFI CFA_Y Y+0
         RET
-        CFI EndBlock cfiBlock8
-//  370 
-//  371 
-//  372 #pragma vector = USART0_TX_vect
+        CFI EndBlock cfiBlock9
+//  394 
+//  395 
+//  396 #pragma vector = USART0_TX_vect
 
         RSEG FARCODE:CODE:NOROOT(1)
-//  373 __interrupt void USART0_TX_ISR(void)
+//  397 __interrupt void USART0_TX_ISR(void)
 USART0_TX_ISR:
-        CFI Block cfiBlock9 Using cfiCommon1
+        CFI Block cfiBlock10 Using cfiCommon1
         CFI Function USART0_TX_ISR
-//  374 //ISR(USART0_TX_vect)             // USART2 Tx Complete interrupt
-//  375 {
+//  398 //ISR(USART0_TX_vect)             // USART2 Tx Complete interrupt
+//  399 {
         ST      -Y, R19
         CFI R19 Frame(CFA_Y, -1)
         CFI CFA_Y Y+1
@@ -2050,11 +2207,11 @@ USART0_TX_ISR:
         IN      R18, 0x3B
         IN      R19, 0x3C
         REQUIRE __RSTACK_in_external_ram_new_way
-//  376 	UCSR0B = UCSR0B | 0x10;
+//  400 	UCSR0B = UCSR0B | 0x10;
         LDS     R16, 193
         ORI     R16, 0x10
         STS     193, R16
-//  377 }
+//  401 }
         OUT     0x3C, R19
         OUT     0x3B, R18
         OUT     0x3F, R17
@@ -2071,7 +2228,7 @@ USART0_TX_ISR:
         CFI R19 SameValue
         CFI CFA_Y Y+0
         RETI
-        CFI EndBlock cfiBlock9
+        CFI EndBlock cfiBlock10
         REQUIRE _A_UCSR0B
 
         ASEGN ABSOLUTE:DATA:NOROOT,01fH
@@ -2118,18 +2275,18 @@ __?XMCRA:
         REQUIRE ?need_segment_init
 
         END
-//  378 
-//  379 
+//  402 
+//  403 
 // 
 //     6 bytes in segment ABSOLUTE
-// 1 882 bytes in segment FARCODE
+// 1 998 bytes in segment FARCODE
 //    14 bytes in segment INITTAB
 //     8 bytes in segment INTVEC
 //     2 bytes in segment NEAR_I
 //     2 bytes in segment NEAR_ID
 // 6 829 bytes in segment NEAR_Z
 // 
-// 1 884 bytes of CODE memory (+ 22 bytes shared)
+// 2 000 bytes of CODE memory (+ 22 bytes shared)
 // 6 831 bytes of DATA memory (+  6 bytes shared)
 //
 //Errors: none

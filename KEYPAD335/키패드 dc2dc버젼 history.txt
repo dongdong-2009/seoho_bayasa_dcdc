@@ -167,3 +167,10 @@ MODE_42 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
 MODE_51 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
 MODE_47 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
 MODE_48 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+
+
+
+-----------------110401
+폴드 코드 추가 
+Fault Record Parameter(Bayasaa).docx 참조
+밤샘작업함

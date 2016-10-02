@@ -339,6 +339,30 @@ void SCI_RequestData(unsigned int addr)
 
 }
 
+void SCI_SendData(unsigned int addr, unsigned int data)
+{
+	CRC.Word = 0;
+	
+	
+	TX0_char(0xAB); 			CRC_16(0xAB);
+	TX0_char(0xCD); 			CRC_16(0xCD);
+	
+	TX0_char(SEND); 			CRC_16(SEND);
+	
+	TX0_char((char)(addr>>8));	CRC_16((char)(addr>>8));
+	TX0_char((char)addr);		CRC_16((char)addr);
+			
+	TX0_char((char)(data>>8));	CRC_16((char)(data>>8));
+	TX0_char((char)data);		CRC_16((char)data);
+	
+	TX0_char(CRC.Byte.b1);
+	TX0_char(CRC.Byte.b0);
+
+	DATA_Registers[addr] = data;
+
+
+}
+
 void SCI_RegisterRefresh(void)
 {
 	int i;

@@ -39,6 +39,8 @@ extern unsigned char EventTimeD;
 extern unsigned char EventTimeE;
 
 extern unsigned char TimeTic_500ms;
+extern unsigned char TimeTic_1s;
+
 
 extern unsigned char MenuDisplay_Handler;
 
@@ -870,122 +872,7 @@ void SYS_cursor_ON_Mode(unsigned char mode);
 	void 	SYS_3_02_3_4		(void);
 
 	void 	SYS_4_00				(void);		
-	void 	SYS_4_01				(void);
-	void 	SYS_4_02				(void);
-	void 	SYS_4_03				(void);		
-	void 	SYS_4_04				(void);
-	void 	SYS_4_05				(void);
-	void 	SYS_4_06				(void);		
-	void 	SYS_4_07				(void);
-	void 	SYS_4_08				(void);
-
 	void 	SYS_4_00_00			(void);
-	void 	SYS_4_00_01			(void);
-	void 	SYS_4_00_02			(void);
-	void 	SYS_4_00_03			(void);
-	void 	SYS_4_00_04			(void);
-	void 	SYS_4_00_05			(void);
-	void 	SYS_4_00_06			(void);
-	void 	SYS_4_00_07			(void);
-	void 	SYS_4_00_08			(void);
-	void 	SYS_4_00_09			(void);
-	void 	SYS_4_00_10			(void);
-
-	void 	SYS_4_01_00			(void);
-	void 	SYS_4_01_01			(void);
-	void 	SYS_4_01_02			(void);
-	void 	SYS_4_01_03			(void);
-	void 	SYS_4_01_04			(void);
-	void 	SYS_4_01_05			(void);
-	void 	SYS_4_01_06			(void);
-	void 	SYS_4_01_07			(void);
-	void 	SYS_4_01_08			(void);
-	void 	SYS_4_01_09			(void);
-	void 	SYS_4_01_10			(void);
-
-	void 	SYS_4_02_00			(void);
-	void 	SYS_4_02_01			(void);
-	void 	SYS_4_02_02			(void);
-	void 	SYS_4_02_03			(void);
-	void 	SYS_4_02_04			(void);
-	void 	SYS_4_02_05			(void);
-	void 	SYS_4_02_06			(void);
-	void 	SYS_4_02_07			(void);
-	void 	SYS_4_02_08			(void);
-	void 	SYS_4_02_09			(void);
-	void 	SYS_4_02_10			(void);
-
-	void 	SYS_4_03_00			(void);
-	void 	SYS_4_03_01			(void);
-	void 	SYS_4_03_02			(void);
-	void 	SYS_4_03_03			(void);
-	void 	SYS_4_03_04			(void);
-	void 	SYS_4_03_05			(void);
-	void 	SYS_4_03_06			(void);
-	void 	SYS_4_03_07			(void);
-	void 	SYS_4_03_08			(void);
-	void 	SYS_4_03_09			(void);
-	void 	SYS_4_03_10			(void);
-
-	void 	SYS_4_04_00			(void);
-	void 	SYS_4_04_01			(void);
-	void 	SYS_4_04_02			(void);
-	void 	SYS_4_04_03			(void);
-	void 	SYS_4_04_04			(void);
-	void 	SYS_4_04_05			(void);
-	void 	SYS_4_04_06			(void);
-	void 	SYS_4_04_07			(void);
-	void 	SYS_4_04_08			(void);
-	void 	SYS_4_04_09			(void);
-	void 	SYS_4_04_10			(void);
-
-	void 	SYS_4_05_00			(void);
-	void 	SYS_4_05_01			(void);
-	void 	SYS_4_05_02			(void);
-	void 	SYS_4_05_03			(void);
-	void 	SYS_4_05_04			(void);
-	void 	SYS_4_05_05			(void);
-	void 	SYS_4_05_06			(void);
-	void 	SYS_4_05_07			(void);
-	void 	SYS_4_05_08			(void);
-	void 	SYS_4_05_09			(void);
-	void 	SYS_4_05_10			(void);
-
-	void 	SYS_4_06_00			(void);
-	void 	SYS_4_06_01			(void);
-	void 	SYS_4_06_02			(void);
-	void 	SYS_4_06_03			(void);
-	void 	SYS_4_06_04			(void);
-	void 	SYS_4_06_05			(void);
-	void 	SYS_4_06_06			(void);
-	void 	SYS_4_06_07			(void);
-	void 	SYS_4_06_08			(void);
-	void 	SYS_4_06_09			(void);
-	void 	SYS_4_06_10			(void);
-
-	void 	SYS_4_07_00			(void);
-	void 	SYS_4_07_01			(void);
-	void 	SYS_4_07_02			(void);
-	void 	SYS_4_07_03			(void);
-	void 	SYS_4_07_04			(void);
-	void 	SYS_4_07_05			(void);
-	void 	SYS_4_07_06			(void);
-	void 	SYS_4_07_07			(void);
-	void 	SYS_4_07_08			(void);
-	void 	SYS_4_07_09			(void);
-	void 	SYS_4_07_10			(void);
-
-	void 	SYS_4_08_00			(void);
-	void 	SYS_4_08_01			(void);
-	void 	SYS_4_08_02			(void);
-	void 	SYS_4_08_03			(void);
-	void 	SYS_4_08_04			(void);
-	void 	SYS_4_08_05			(void);
-	void 	SYS_4_08_06			(void);
-	void 	SYS_4_08_07			(void);
-	void 	SYS_4_08_08			(void);
-	void 	SYS_4_08_09			(void);
-	void 	SYS_4_08_10			(void);
 
 	void 	SYS_5_00				(void);
 	void 	SYS_5_01				(void);
