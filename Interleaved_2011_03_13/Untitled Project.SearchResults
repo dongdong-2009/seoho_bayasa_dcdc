@@ -1,0 +1,3 @@
+---- Data_Registers[3195] Matches (2 in 1 files) ----
+SCI_BC.c (src):	if(Data_Registers[3195])
+SCI_BC.c (src):		Data_Registers[3195] = 0;

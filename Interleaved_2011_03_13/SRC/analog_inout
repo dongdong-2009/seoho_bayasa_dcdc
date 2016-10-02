@@ -1,0 +1,103 @@
+#define __ANALOG_INOUT_H_
+
+#include "math.h"
+#include "main_def.h"
+
+void AO_Processing(Uint16 * count1)
+{
+
+	float x,x1,x2,y1,y2;
+	float Output,RateValue;
+	float Temp;
+	unsigned int count;
+	int Temp1;
+
+	Temp= (double)P.G11.AO1.P02_Adjustment_0mA *(Count20mA-Count0mA);
+	switch ( P.G11.AO1.P00_Output_selection ) //     
+	{
+		case 0:		Output= (Wrpm_det/(double)P.G01.P05_Rated_speed)*(double)P.G01.P03_Rated_frequency;
+					RateValue= (double)P.G01.P03_Rated_frequency;											break;
+		case 1:		Output= Wrpm_det;				RateValue= (double)P.G01.P05_Rated_speed;				break;
+		case 2:		Output= Is_mag_rms;				RateValue= (double)P.G01.P02_Rated_current_x10*0.1;		break;
+		case 3:		Output= (sqrt(Vdss_ref*Vdss_ref+Vqss_ref*Vqss_ref)*SQRT2);
+					RateValue= (double)P.G01.P01_Rated_voltage;												break;
+		case 4:		Output= Te;						RateValue= Te_rate;										break;
+		case 5:		Output= Output_power_x10_kW;	RateValue= (double)P.G01.P00_Rated_power_x10_kW*100;	break;
+		case 6:		Output= Vdc;					RateValue= (double)P.G01.P08_Supply_voltage*SQRT2;		break;
+		// Free Function Output 
+//		case 7:	 	Output= 0.0;					RateValue= 100.0;										break;
+		case 8:		count= (unsigned int)Count0mA-(unsigned int)(Temp);										break;
+		case 9:		count= (unsigned int)Count4mA-(unsigned int)(Temp);										break;
+		case 10:	count= (unsigned int)Count20mA-(unsigned int)(Temp);									break;
+		default:	Output= 0.0; 	count= 0;	RateValue= 100.0;											break;
+	}
+
+	if ( P.G11.AO1.P00_Output_selection<= 7 )
+	{
+		Temp= fabs(Output)/(RateValue*(double)P.G11.AO1.P05_Max_output_x1000*1.e-3);
+/*		
+		if( P.G11.AO1.P01_Type == 1 ) // 4~20mA 출력 
+			Temp1 = P.G11.AO1.P03_Adjustment_4mA; // 4mA offset count
+		else Temp1 = P.G11.AO1.P02_Adjustment_0mA; // 0~ 20mA 출력
+*/
+		if( P.G11.AO1.P01_Type == 1 ) // 4~20mA 출력 
+			Temp1 = Count4mA; // 4mA offset count
+		else Temp1 = Count0mA; // 0~ 20mA 출력
+				
+		
+		Temp= (Temp*(double)(Temp1-Count20mA));
+		if(P.G11.AO1.P06_Inversion== 1) // 0일 때 20mA
+			Temp= Count20mA+Temp;
+		else	Temp= Temp1-Temp;
+
+		Temp= BOUND(Temp, Temp1, Count20mA);
+			
+		count = (Uint16) Temp;
+		
+	}
+
+	* count1 = count;
+
+// channel 2 
+
+	Temp= (double)P.G11.AO2.P02_Adjustment_0mA *(Count20mA-Count0mA);
+	switch ( P.G11.AO2.P00_Output_selection ) //     
+	{
+		case 0:		Output= (Wrpm_det/(double)P.G01.P05_Rated_speed)*(double)P.G01.P03_Rated_frequency;
+					RateValue= (double)P.G01.P03_Rated_frequency;											break;
+		case 1:		Output= Wrpm_det;				RateValue= (double)P.G01.P05_Rated_speed;				break;
+		case 2:		Output= Is_mag_rms;				RateValue= (double)P.G01.P02_Rated_current_x10*0.1;		break;
+		case 3:		Output= (sqrt(Vdss_ref*Vdss_ref+Vqss_ref*Vqss_ref)*SQRT2);
+					RateValue= (double)P.G01.P01_Rated_voltage;												break;
+		case 4:		Output= Te;						RateValue= Te_rate;										break;
+		case 5:		Output= Output_power_x10_kW;	RateValue= (double)P.G01.P00_Rated_power_x10_kW*100;	break;
+		case 6:		Output= Vdc;					RateValue= (double)P.G01.P08_Supply_voltage*SQRT2;		break;
+		// Free Function Output 
+//		case 7:	 	Output= 0.0;					RateValue= 100.0;										break;
+		case 8:		count= (unsigned int)Count0mA-(unsigned int)(Temp);										break;
+		case 9:		count= (unsigned int)Count4mA-(unsigned int)(Temp);										break;
+		case 10:	count= (unsigned int)Count20mA-(unsigned int)(Temp);									break;
+		default:	Output= 0.0; 	count= 0;	RateValue= 100.0;											break;
+	}
+	
+	
+	if ( P.G11.AO2.P00_Output_selection<= 7 )
+	{
+		x= Output;
+		x1= 0.0;
+		x2= RateValue*(double)P.G11.AO2.P05_Max_output_x1000*1.e-3;
+		y2= (double)P.G11.AO2.P04_Adjustment_20mA;
+		if( P.G11.AO2.P01_Type == 1 ) // 4~20mA 출력 
+			y1 = (double)P.G11.AO2.P03_Adjustment_4mA; // 4mA offset count
+		else y1 = (double)P.G11.AO2.P02_Adjustment_0mA; // 0~ 20mA 출력
+
+		if(P.G11.AO2.P06_Inversion== 0) // 0일 때 20mA
+			Temp = linear_eq( x1, x2, y1, y2, x );
+		else Temp = linear_eq( x2, x1, y1, y2, x );
+
+		Temp = (1- Temp) * EPwmPeriodCount;
+		count = (Uint16) Temp;
+	}
+
+//	* count1 = count; 
+}
