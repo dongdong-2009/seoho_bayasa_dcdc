@@ -1072,7 +1072,7 @@ __flash char  PAGE_DIR_2_29_XX[27][17]={
 	"P29.3 Rtd_OutPwr",
 	"P29.4 ReactorRes",
 	"P29.5 ReactorInd",
-	"P29.6 ChargeTime",
+	"P29.6 V SensTime",
 	"P29.7 VC P-Gain ",
 	"P29.8 VC I-Gain ",
 	"P29.9 CC P-Gain ",
@@ -1991,8 +1991,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 6)CLCD_string(0xC0," 6 WARNING Stats");
 			else if(Temporary == 7)CLCD_string(0xC0," 7 DIRECTION    ");
 			else if(Temporary == 8)CLCD_string(0xC0," 8 JOG Status   ");
-			else if(Temporary == 9)CLCD_string(0xC0," 9 OV_OC_UV_Fn  ");
-
+			else if(Temporary == 9)CLCD_string(0xC0," 9 OV_OC_UV_Fn  ");
 			//else if(Temporary ==10)CLCD_string(0xC0,"10 Free_Func    ");
 			//else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
@@ -17574,7 +17573,7 @@ void SYS_4_00(void)
 	
 	if(RefreshFlag)
 	{
-          CLCD_string(0x80,(char*)_TEXT("Total Fault:%d  ",DATA_Registers[2379]));
+		CLCD_string(0x80,(char*)_TEXT("Total Fault = %d",DATA_Registers[2379]));
 		if(DATA_Registers[2381])
 		{
 			CLCD_string(0xC0,(char*)_TEXT(" % 2d Record(%02d)  ",DATA_Registers[2382],DATA_Registers[2382]));
