@@ -1,17 +1,1 @@
----- DATA_Registers[2376] Matches (16 in 1 files) ----
-Display.c (source\mcu):		if(DATA_Registers[2376] & 0x8000) 	CLCD_string(0xC0,"F1 Over_Load	  ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x4000) CLCD_string(0xC0,"F2 Device_chort ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x2000) CLCD_string(0xC0,"F3 Over_Current ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x1000) CLCD_string(0xC0,"F4 Over_Voltage ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0800) CLCD_string(0xC0,"F5 Under_Voltage");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0400) CLCD_string(0xC0,"F6 Over_Speed   ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0200) CLCD_string(0xC0,"F7 Over_Temp    ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0100) CLCD_string(0xC0,"F8 DB_Fault	  ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0080) CLCD_string(0xC0,"F9 Driver_Fault ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0040) CLCD_string(0xC0,"F10 Ext_Fault   ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0020) CLCD_string(0xC0,"F11 HW_Fault	  ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0010) CLCD_string(0xC0,"F12 Over_Curr_A ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0008) CLCD_string(0xC0,"F13 Over_Curr_B ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0004) CLCD_string(0xC0,"F14 Over_Curr_C ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0002) CLCD_string(0xC0,"F15 Init_Charge ");
-Display.c (source\mcu):		else if(DATA_Registers[2376] & 0x0001) CLCD_string(0xC0,"F16 Speed_Detect");
+---- PAGE_DIR_1_2_XX_BISA Matches (0 in 0 files) ----

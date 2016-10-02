@@ -1,14 +1,20 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V5.30.0.50166/W32 for Atmel AVR    18/Feb/2011  02:40:45 #
+# IAR C/C++ Compiler V5.30.0.50166/W32 for Atmel AVR    19/Feb/2011  13:59:38 #
 # Copyright 1996-2009 IAR Systems AB.                                         #
 #                                                                             #
-#    Source file  =  D:\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMItoPANEL #
-#                    .c                                                       #
-#    Command line =  D:\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMItoPANEL #
-#                    .c --cpu=m2560 -ms -o D:\KEYPAD335_110218_IAR_BISA\Debug #
-#                    \Obj\ -lC D:\KEYPAD335_110218_IAR_BISA\Debug\List\ -lA   #
-#                    D:\KEYPAD335_110218_IAR_BISA\Debug\List\ -y              #
+#    Source file  =  C:\Documents and Settings\uesr\My Documents\네이트온     #
+#                    받은 파일\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMI #
+#                    toPANEL.c                                                #
+#    Command line =  "C:\Documents and Settings\uesr\My Documents\네이트온    #
+#                    받은 파일\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMI #
+#                    toPANEL.c" --cpu=m2560 -ms -o "C:\Documents and          #
+#                    Settings\uesr\My Documents\네이트온 받은                 #
+#                    파일\KEYPAD335_110218_IAR_BISA\Debug\Obj\" -lC           #
+#                    "C:\Documents and Settings\uesr\My Documents\네이트온    #
+#                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\List\" -lA     #
+#                    "C:\Documents and Settings\uesr\My Documents\네이트온    #
+#                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\List\" -y      #
 #                    --initializers_in_flash -z3 --no_cse --no_inline         #
 #                    --no_code_motion --no_cross_call --no_clustering         #
 #                    --no_tbaa --debug --enable_external_bus                  #
@@ -16,15 +22,17 @@
 #                    "C:\Program Files\IAR Systems\Embedded Workbench         #
 #                    5.3\avr\INC\" -I "C:\Program Files\IAR Systems\Embedded  #
 #                    Workbench 5.3\avr\INC\CLIB\" --eeprom_size 4096          #
-#    List file    =  D:\KEYPAD335_110218_IAR_BISA\Debug\List\rs232_MMItoPANEL #
-#                    .lst                                                     #
-#    Object file  =  D:\KEYPAD335_110218_IAR_BISA\Debug\Obj\rs232_MMItoPANEL. #
-#                    r90                                                      #
+#    List file    =  C:\Documents and Settings\uesr\My Documents\네이트온     #
+#                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\List\rs232_MMI #
+#                    toPANEL.lst                                              #
+#    Object file  =  C:\Documents and Settings\uesr\My Documents\네이트온     #
+#                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\Obj\rs232_MMIt #
+#                    oPANEL.r90                                               #
 #                                                                             #
 #                                                                             #
 ###############################################################################
 
-D:\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMItoPANEL.c
+C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMItoPANEL.c
       1          //==============================================================================================
       2          //
       3          // Copyright(C) 2008 HanYoung ELEC. Co., LTD.

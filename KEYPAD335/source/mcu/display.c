@@ -251,20 +251,20 @@ __flash char  PAGE_DIR_1_2_XX[9][17]={
 };
 
 __flash char  PAGE_DIR_1_0_XX_BISA[14][17]={
-	"0 Vdc_Input Volt ",
-	"1 Input_DC Curr  ",
-	"2 Output  Volt   ",
-	"3 A Phase Curr   ",
-	"4 B Phase Curr   ",
-	"5 C Phase Curr   ",
-	"6 Curr Reference ",
-	"7 Vdc Error      ",
-	"8 Input Power    ",
-	"9 Output Power   ",
-	"10 Idc_Error_A   ",
-	"11 Idc_Error_B   ",
-	"12 Idc_Error_C   ",
-	"13 Temperature   "
+	"0 Vdc_Input Volt",
+	"1 Input_DC Curr ",
+	"2 Output  Volt  ",
+	"3 A Phase Curr  ",
+	"4 B Phase Curr  ",
+	"5 C Phase Curr  ",
+	"6 Curr Reference",
+	"7 Vdc Error     ",
+	"8 Input Power   ",
+	"9 Output Power  ",
+	"10 Idc_Error_A  ",
+	"11 Idc_Error_B  ",
+	"12 Idc_Error_C  ",
+	"13 Temperature  "
 };
 
 __flash char  PAGE_DIR_1_1_XX_BISA[5][17]={
@@ -276,14 +276,14 @@ __flash char  PAGE_DIR_1_1_XX_BISA[5][17]={
 };
 
 __flash char  PAGE_DIR_1_2_XX_BISA[8][17]={
-	"0 Interleaved DC ",
-	"1 Control Method ",
-	"2 RUN/STOP Src   ",
-	"3 Ref Method     ",
-	"4 Drive Power    ",
-	"5 Drive Voltage  ",
-	"6 Device Info    ",
-	"7 Software Ver   "
+	"0 Interleaved DC",
+	"1 Control Method",
+	"2 RUN/STOP Src  ",
+	"3 Ref Method    ",
+	"4 Drive Power   ",
+	"5 Drive Voltage ",
+	"6 Device Info   ",
+	"7 Software Ver  "
 };
 
 __flash char  PAGE_DIR_2_XX[26][17]={
@@ -312,7 +312,7 @@ __flash char  PAGE_DIR_2_XX[26][17]={
 	" 22 M2 Constant ",
 	"23 Comm Control ",
 	"24 Monitor Setup",
-	"29              "
+	"29 DC/DC PARAM  "
 };
 
 
@@ -1040,48 +1040,48 @@ __flash char  PAGE_DIR_2_22_XX[9][17]={
 };
 
 __flash char  PAGE_DIR_2_23_XX[12][17]={
-"P23.0 Dead_Time ",
-"P23.1 Lin_Ratio ",
-"P23.2 V_Sens_Scl",
-"P23.3 I_Scale_A ",
-"P23.4 I_Scale_B ",
-"P23.5 I_Scale_C ",
-"P23.6 I_Offs_A1 ",
-"P23.7 I_Offs_B1 ",
-"P23.8 I_Offs_C1 ",
-"P23.9 I_Offs_A2 ",
-"P23.10 I_Offs_B2",
-"P23.11 I_Offs_C2"
+	"P23.0 Dead_Time ",
+	"P23.1 Lin_Ratio ",
+	"P23.2 V_Sens_Scl",
+	"P23.3 I_Scale_A ",
+	"P23.4 I_Scale_B ",
+	"P23.5 I_Scale_C ",
+	"P23.6 I_Offs_A1 ",
+	"P23.7 I_Offs_B1 ",
+	"P23.8 I_Offs_C1 ",
+	"P23.9 I_Offs_A2 ",
+	"P23.10 I_Offs_B2",
+	"P23.11 I_Offs_C2"
 };
 
 __flash char  PAGE_DIR_2_29_XX[27][17]={
- "P29.0 PWM_Freq   ",
- "P29.1 Vdc_Out Set",
- "P29.2 Rtd_In Volt",
- "P29.3 Rtd_Out Pwr",
- "P29.4 Reactor Res",
- "P29.5 Reactor_Ind",
- "P29.6 V Sens_Time",
- "P29.7 VC P-Gain  ",
- "P29.8 VC I-Gain  ",
- "P29.9 CC P-Gain  ",
- "P29.10 CC I-Gain ",
- "P29.11 VCCycleCnt",
- "P29.12 Input Cap ",
- "P29.13 Output Cap",
- "P29.14 VC Freq   ",
- "P29.15 CC Freq   ",
- "P29.16 Out OV-Set",
- "P29.17 Out UV-Set",
- "P29.18 In OV-Set ",
- "P29.19 In UV-Set ",
- "P29.20 In RtdCurr",
- "P29.21 OC Set Val",
- "P29.22 MaxContCur",
- "P29.23 OL-CurrVal",
- "P29.24 OL Time   ",
- "P29.25 OV Time   ",
- "P29.26 OT-Set Val"
+	"P29.0 PWM_Freq  ",
+	"P29.1 Vdc_OutSet",
+	"P29.2 Rtd_InVolt",
+	"P29.3 Rtd_OutPwr",
+	"P29.4 ReactorRes",
+	"P29.5 ReactorInd",
+	"P29.6 V SensTime",
+	"P29.7 VC P-Gain ",
+	"P29.8 VC I-Gain ",
+	"P29.9 CC P-Gain ",
+	"P29.10 CC I-Gain",
+	"P29.11 VCycleCnt",
+	"P29.12 Input Cap",
+	"P29.13 OutputCap",
+	"P29.14 VC Freq  ",
+	"P29.15 CC Freq  ",
+	"P29.16 Out OVSet",
+	"P29.17 Out UVSet",
+	"P29.18 In OV-Set",
+	"P29.19 In UV-Set",
+	"P29.20 InRtdCurr",
+	"P29.21 OC SetVal",
+	"P29.22 MxContCur",
+	"P29.23 OL-CurVal",
+	"P29.24 OL Time  ",
+	"P29.25 OV Time  ",
+	"P29.26 OT-SetVal"
  };
 
 __flash char  PAGE_DIR_3_XX_3_4[6][17]={
@@ -3327,7 +3327,7 @@ void SYS_1_1_04(void)
 void SYS_1_2_00(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_1_2;
-	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_1_2_08;
+	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_1_2_07;
 	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_1_2_01;
 
 	if(RefreshFlag){
@@ -3420,27 +3420,14 @@ void SYS_1_2_07(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_1_2;
 	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_1_2_06;
-	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_1_2_08;
+	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_1_2_00;
 	if(RefreshFlag){
 		Temporary = ReadDataMem(2357);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_2_XX_BISA[7][0]));
 		SYS_ParameterDisplay(MODE_5d);
 	}
 }
-void SYS_1_2_08(void)
-{
-	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_1_2;
-	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_1_2_07;
-	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_1_2_00;
-
-	if(RefreshFlag)
-	{
-		Temporary = ReadDataMem(2358);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_2_XX_BISA[8][0]));
-		SYS_ParameterDisplay(MODE_5d);
-	}
-}
-
+ 
 
 
 
@@ -16500,7 +16487,7 @@ void SYS_2_29_00(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1870);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[0][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[0][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_kHz);
 	}
 }
@@ -16519,7 +16506,7 @@ void SYS_2_29_01(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1871);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[1][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[1][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_V);
 	}
 }
@@ -16538,7 +16525,7 @@ void SYS_2_29_02(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1872);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[2][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[2][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_V);
 	}
 }
@@ -16557,7 +16544,7 @@ void SYS_2_29_03(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1873);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[3][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[3][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_kW);
 	}
 }
@@ -16577,7 +16564,7 @@ void SYS_2_29_04(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1874);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[4][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[4][0]));
 		SYS_ParameterDisplay(MODE_5u_mOhm);
 	}
 }
@@ -16596,7 +16583,7 @@ void SYS_2_29_05(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1875);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[5][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[5][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_mH);
 	}
 }
@@ -16615,7 +16602,7 @@ void SYS_2_29_06(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1876);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[6][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[6][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_mH);
 	}
 }
@@ -16634,7 +16621,7 @@ void SYS_2_29_07(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1877);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[7][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[7][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_persent);
 	}
 }
@@ -16653,7 +16640,7 @@ void SYS_2_29_08(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1878);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[8][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[8][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_persent);
 	}
 }
@@ -16672,7 +16659,7 @@ void SYS_2_29_09(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1879);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[9][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[9][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_persent);
 	}
 }
@@ -16692,7 +16679,7 @@ void SYS_2_29_10(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1880);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[10][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[10][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_persent);
 	}
 }
@@ -16711,7 +16698,7 @@ void SYS_2_29_11(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1881);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[11][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[11][0]));
 		SYS_ParameterDisplay(MODE_5u);
 	}
 }
@@ -16730,7 +16717,7 @@ void SYS_2_29_12(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1882);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[12][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[12][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_mF);
 	}
 }
@@ -16749,7 +16736,7 @@ void SYS_2_29_13(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1883);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[13][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[13][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_mF);
 	}
 }
@@ -16768,7 +16755,7 @@ void SYS_2_29_14(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1884);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[14][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[14][0]));
 		SYS_ParameterDisplay(MODE_5u_Hz);
 	}
 }
@@ -16787,7 +16774,7 @@ void SYS_2_29_15(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1885);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[15][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[15][0]));
 		SYS_ParameterDisplay(MODE_5u_Hz);
 	}
 }
@@ -16806,7 +16793,7 @@ void SYS_2_29_16(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1886);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[16][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[16][0]));
 		SYS_ParameterDisplay(MODE_5u_V);
 	}
 }
@@ -16825,7 +16812,7 @@ void SYS_2_29_17(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1887);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[17][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[17][0]));
 		SYS_ParameterDisplay(MODE_5u_V);
 	}
 }
@@ -16844,7 +16831,7 @@ void SYS_2_29_18(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1888);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[18][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[18][0]));
 		SYS_ParameterDisplay(MODE_5u_V);
 	}
 }
@@ -16864,7 +16851,7 @@ void SYS_2_29_18(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1889);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[18][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[19][0]));
 		SYS_ParameterDisplay(MODE_5u_V);
 	}
 }
@@ -16884,7 +16871,7 @@ void SYS_2_29_20(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1890);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[20][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[20][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_A);
 	}
 }
@@ -16903,7 +16890,7 @@ void SYS_2_29_21(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1891);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[21][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[21][0]));
 		SYS_ParameterDisplay(MODE_5u_persent);
 	}
 }
@@ -16922,7 +16909,7 @@ void SYS_2_29_22(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1892);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[22][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[22][0]));
 		SYS_ParameterDisplay(MODE_5u_persent);
 	}
 }
@@ -16941,7 +16928,7 @@ void SYS_2_29_23(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1893);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[23][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[23][0]));
 		SYS_ParameterDisplay(MODE_5u_persent);
 	}
 }
@@ -16960,7 +16947,7 @@ void SYS_2_29_24(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1894);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[24][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[24][0]));
 		SYS_ParameterDisplay(MODE_5u_s);
 	}
 }
@@ -16979,7 +16966,7 @@ void SYS_2_29_25(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1895);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[25][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[25][0]));
 		SYS_ParameterDisplay(MODE_5u_s);
 	}
 }
@@ -16998,7 +16985,7 @@ void SYS_2_29_26(void)
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1896);
-		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_19_XX[26][0]));
+		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[26][0]));
 		SYS_ParameterDisplay(MODE_3d_1u_deg);
 	}
 }
@@ -20050,7 +20037,7 @@ void MainSYSTEM(void)
 		PORTL_Bit2 = 1;
 	}
 //communication fault
-#if 0
+#if 1
 if(Communication_Fault_Flag)
 {
 	PORTL_Bit3 = 1;
@@ -20067,7 +20054,7 @@ else
 	MenuDisplay_Handler = MENU_RUN;
 }
 #endif
-
+#if 0
 //fault detection
 	if(DATA_Registers[2379] != FaultDetectionHistory)
 	{
@@ -20108,5 +20095,5 @@ else
 		PORTL_Bit3 = 0;
 	}
 	
-
+#endif
 }
