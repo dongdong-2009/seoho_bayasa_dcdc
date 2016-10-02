@@ -3427,6 +3427,12 @@ void SYS_1_1_00(void)
 	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_1_1_04;
 	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_1_1_01;
 
+	if(TimeTic_500ms)
+	{
+		SCI_RequestData(2340);
+		RefreshFlag = 1;
+	}
+
 	if(RefreshFlag){
 		Temporary = ReadDataMem(2340);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_1_XX_BISA[0][0]));
@@ -3438,6 +3444,12 @@ void SYS_1_1_01(void)
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_1_1;
 	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_1_1_00;
 	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_1_1_02;
+
+	if(TimeTic_500ms)
+	{
+		SCI_RequestData(2341);
+		RefreshFlag = 1;
+	}
 	
 	if(RefreshFlag){
 		Temporary = ReadDataMem(2341);

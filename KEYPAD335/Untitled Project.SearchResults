@@ -1,13 +1,8 @@
----- MODE_P8select Matches (12 in 1 files) ----
-Display.c (source\mcu):#define MODE_P8select 40
-Display.c (source\mcu):	else if(mode == MODE_P8select)
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_P8select);
+---- PAGE_DIR_1_1_XX Matches (7 in 1 files) ----
+Display.c (source\mcu):__flash char  PAGE_DIR_1_1_XX[5][17]={
+Display.c (source\mcu):__flash char  PAGE_DIR_1_1_XX_BISA[5][17]={
+Display.c (source\mcu):		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_1_XX_BISA[0][0]));
+Display.c (source\mcu):		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_1_XX_BISA[1][0]));
+Display.c (source\mcu):		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_1_XX_BISA[2][0]));
+Display.c (source\mcu):		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_1_XX_BISA[3][0]));
+Display.c (source\mcu):		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_1_XX_BISA[4][0]));
