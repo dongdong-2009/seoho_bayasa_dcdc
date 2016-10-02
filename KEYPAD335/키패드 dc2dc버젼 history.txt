@@ -96,3 +96,30 @@ P11.4는 0.891으로 보여야 될 것이 "0. 891"으로 보이며 코서가 한 자리 뒤에 보입니�
 3.     P11.0 AO1 Output 의 2번 선택시 현재 Output Current을 Input Current으로 변경
 
 
+
+
+--------110323
+다음과 같은 수정 사항이 필요합니다.
+
+
+1.  M1.1 즉, Drive Monitor -> Terminal IO 에 표시되는 항목들이 해당된 dataregisters 의 값을 표시하도록 할 것
+
+2.  M1.2.7 Software version에서 2.93A 으로 보여야 하는데 2.93%A 로 보입니다. 고쳐 주세요
+
+3. DI (P8) 에서 일부 파라메타를 안 보이도록 할 것 (참고 파일에서 표시디지 않은 파라메타를 안 보이게 합니다)
+
+4. DO (P12) 에서 일부 파라메타를 안 보이도록 할 것 (참고 파일에서 표시디지 않은 파라메타를 안 보이게 합니다)
+
+
+;Interleaved Parameter(2011_03_21).xls 참고
+
+p8파라미터 수정
+;일부메뉴 주석처리, SYS_ParameterEdt에 #define EDIT_MODE_P8_123456  추가
+
+p12 파라미터 수정
+;SYS_ParameterEdt에 #define EDIT_MODE_P12 추가
+
+각 키동작을 독립적으로 구성함...
+
+M1.1 바이사씨가 확인후 다시메일
+
