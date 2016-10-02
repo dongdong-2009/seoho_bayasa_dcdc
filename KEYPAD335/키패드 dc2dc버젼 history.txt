@@ -127,3 +127,43 @@ M1.1 바이사씨가 확인후 다시메일
 
 ---------110328
  DI포트 데이터수신 문제점 해결 : 리퀘스트
+
+
+
+---------110330
+P8번 메뉴수정
+- P8.0에 키입력문제 해결
+- P8.1~n의 입력문제 해결
+
+관련수정_키워드
+#define MODE_P8_0_selection 39
+#define MODE_P8_1to29_selection 40
+#define EDIT_MODE_P8_123456 5
+#define EDIT_MODE_P12 6
+#define EDIT_MODE_ON_OFF 7
+
+-글로벌 리퀘스트 추가
+; 데이터량이 많아질경우  통신속도가 현저하게 떨어지는 문제점이 발생함
+; 바이사씨 제어프로그램일경우 pwm인터럽트(제어루틴)가 자주 발생하여 통신속도를 저하시킴
+  어찌되었건 while루프 안에서 통신을 해결하는 것이 목표
+  - 메뉴진입에 gRequestAddr 바꾸어서 리퀘스트 명령어를 0.5간격으로 dsp로 날림
+
+관련키워드
+if(TimeTic_500ms)
+{
+  SCI_RequestData(gRequestAddr);
+}
+
+- SYS_ParameterDisplay함수
+; 범위를 넘어선 데이터가 들어옴 따라서 아래코드 추가함
+  CLCD_string(0xC0,(char*)_TEXT("irValue:%d ",Temporary));
+
+MODE_17 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+MODE_18 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+MODE_28 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+MODE_P8_0_selection 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+MODE_41 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+MODE_42 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+MODE_51 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+MODE_47 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경
+MODE_48 일 때 SYS_ParameterEdt함수에서 EDIT_MODE_0_1 사용하도록 변경

@@ -42,6 +42,7 @@ extern unsigned char TimeTic_500ms;
 
 extern unsigned char MenuDisplay_Handler;
 
+extern unsigned int gRequestAddr;
 
 extern void(*MenuDisplay)(void);
 

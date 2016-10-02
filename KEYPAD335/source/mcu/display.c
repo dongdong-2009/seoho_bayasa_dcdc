@@ -44,8 +44,7 @@
 #define EDIT_MODE_4 4
 #define EDIT_MODE_P8_123456 5
 #define EDIT_MODE_P12 6
-
-
+#define EDIT_MODE_0_1 7
 
 #define CURSOR_MODE_0 0
 #define CURSOR_MODE_1 1
@@ -129,8 +128,8 @@
 #define MODE_36 36
 #define MODE_37 37
 
-#define MODE_39 39
-#define MODE_P8select 40
+#define MODE_P8_0_selection 39
+#define MODE_P8_1to29_selection 40
 #define MODE_41 41
 #define MODE_42 42
 #define MODE_43 43
@@ -152,12 +151,13 @@
 #define MODE_3d_1u_mH 63
 #define MODE_1d_3u_pu 64
 
-
 unsigned int DATA_Registers[BUF_MAX];
 
 unsigned char RefreshFlag = 0;
 unsigned int Temporary=0;
 unsigned int edit_Temp=0;
+
+unsigned int gRequestAddr = 0;
 
 char password[4]={0,0,0,0};
 
@@ -1184,6 +1184,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(Temporary == 0)     CLCD_string(0xC0,"[0] Standard I  ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Standard II ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] Application ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1191,6 +1192,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(edit_Temp == 0)     CLCD_string(0xC0,"[0] Standard I  ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Standard II ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] Application ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1200,12 +1202,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)     CLCD_string(0xC0,"[0] 200/400/500 ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1]    600      ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)     CLCD_string(0xC0,"[0] 200/400/500 ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1]    600      ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1215,12 +1219,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)     CLCD_string(0xC0,"[0]    50Hz     ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1]    60Hz     ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)     CLCD_string(0xC0,"[0]    50Hz     ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1]    60Hz     ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1230,12 +1236,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)     CLCD_string(0xC0,"[0] Thermal Rly ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] NTC Therm   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)     CLCD_string(0xC0,"[0]  Thermal Rly");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1]  NTC Therm  ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1326,6 +1334,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] V/F Speed   ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] S/L Vector  ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] Vector Ctrl ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1334,6 +1343,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] V/F Speed   ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] S/L Vector  ");
 			else if(edit_Temp == 3)CLCD_string(0xC0,"[3] Vector Ctrl ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1359,6 +1369,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] SyncCtrlBus ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] Fieldbus    ");
 			else if(Temporary == 4)CLCD_string(0xC0,"[4] Free Func   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1368,6 +1379,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] SyncCtrlBus ");
 			else if(edit_Temp == 3)CLCD_string(0xC0,"[3] Fieldbus    ");
 			else if(edit_Temp == 4)CLCD_string(0xC0,"[4] Free Func   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1391,6 +1403,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] Ramp STOP   ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Free-RUN    ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] Mixed STOP  ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1398,6 +1411,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] Ramp STOP   ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Free-RUN    ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] Mixed STOP  ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1420,12 +1434,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)     CLCD_string(0xC0,"[0] Disabled    ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Enabled     ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)     CLCD_string(0xC0,"[0] Disabled    ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Enabled     ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1435,12 +1451,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)     CLCD_string(0xC0,"[0] X 1 sec     ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] X 10 SEC    ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)     CLCD_string(0xC0,"[0] X 1 sec     ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] X 10 SEC    ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1493,6 +1511,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] E_STOP      ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] Ctrl OFF    ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] IGNORE      ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1501,6 +1520,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] E_STOP      ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] Ctrl OFF    ");
 			else if(edit_Temp == 3)CLCD_string(0xC0,"[3] IGNORE      ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1524,6 +1544,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] Disabled    ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Enable RUN  ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] En RUN/STOP ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1531,6 +1552,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] Disabled    ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Enable RUN  ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] En RUN/STOP ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1542,6 +1564,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] E_STOP      ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] CTRL OFF    ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] IGNORE      ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1550,6 +1573,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] E_STOP      ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] CTRL OFF    ");
 			else if(edit_Temp == 3)CLCD_string(0xC0,"[3] IGNORE      ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1573,6 +1597,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] Disabled    ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] AI 1 -> Ref ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] AI 2 -> Ref ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1580,6 +1605,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] Disabled    ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] AI 1 -> Ref ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] AI 2 -> Ref ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1589,12 +1615,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] Disabled    ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Analog In   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] Disabled    ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Analog In   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1606,6 +1634,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] -10 ¡ç¡æ 10V  ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] 4 ¡ç¡æ 20mA   ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] 0 ¡ç¡æ 20mA   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1614,6 +1643,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] -10 ¡ç¡æ 10V  ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] 4 ¡ç¡æ 20mA   ");
 			else if(edit_Temp == 3)CLCD_string(0xC0,"[3] 0 ¡ç¡æ 20mA   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1691,6 +1721,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Process PID ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] Compensator ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] FreeFnc_PID ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1699,6 +1730,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Process PID ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] Compensator ");
 			else if(edit_Temp == 3)CLCD_string(0xC0,"[3] FreeFnc_PID ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1710,6 +1742,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Set_Value   ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] AI 1 -> Ref ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] AI 2 -> Ref ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1718,6 +1751,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Set_Value   ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] AI 1 -> Ref ");
 			else if(edit_Temp == 3)CLCD_string(0xC0,"[3] AI 2 -> Ref ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1728,6 +1762,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] AI 1 -> Fb  ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] AI 1 -> Fb  ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] Free Func   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1735,6 +1770,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] AI 1 -> Fb  ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] AI 1 -> Fb  ");
 			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] Free Func   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1752,22 +1788,24 @@ void SYS_ParameterDisplay(unsigned char mode)
 		}
 
 	}
-	else if(mode == MODE_39)
+	else if(mode == MODE_P8_0_selection)
 	{
 		if(!Edit_flag)
 		{
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] 1.FWD/2.REV ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] 1.RUN/2.DIR ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] 1.FWD/2.REV ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] 1.RUN/2.DIR ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
-	else if(mode == MODE_P8select)
+	else if(mode == MODE_P8_1to29_selection)
 	{
 		if(!Edit_flag)
 		{
@@ -1801,22 +1839,23 @@ void SYS_ParameterDisplay(unsigned char mode)
 			//else if(Temporary ==27)CLCD_string(0xC0,"[27] Slv Opt Byp");
 			//else if(Temporary ==28)CLCD_string(0xC0,"[28] FlyingStart");
 			//else if(Temporary ==29)CLCD_string(0xC0,"[29] Disable P/B");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
-			if(Temporary == 0)		 CLCD_string(0xC0,"[0] NONE        ");
-			else if(Temporary == 1)CLCD_string(0xC0,"[1] Drive En    ");
-			else if(Temporary == 2)CLCD_string(0xC0,"[2] MultiStep 0 ");
+			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] NONE        ");
+			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Drive En    ");
+			else if(edit_Temp == 2)CLCD_string(0xC0,"[2] MultiStep 0 ");
 			//else if(Temporary == 3)CLCD_string(0xC0,"[3] MultiStep 1 ");
 			//else if(Temporary == 4)CLCD_string(0xC0,"[4] MultiStep 2 ");
 			//else if(Temporary == 5)CLCD_string(0xC0,"[5] MultiStep 3 ");
-			else if(Temporary == 6)CLCD_string(0xC0,"[6] Fault Reset ");
+			else if(edit_Temp == 6)CLCD_string(0xC0,"[6] Fault Reset ");
 			//else if(Temporary == 7)CLCD_string(0xC0,"[7] JOG         ");
 			//else if(Temporary == 8)CLCD_string(0xC0,"[8] AI_REF_En   ");
-			else if(Temporary == 9)CLCD_string(0xC0,"[9] AI Loc Remot");
-			else if(Temporary ==10)CLCD_string(0xC0,"[10] Ext Fault A");
-			else if(Temporary ==11)CLCD_string(0xC0,"[11] Ext Fault B");
+			else if(edit_Temp == 9)CLCD_string(0xC0,"[9] AI Loc Remot");
+			else if(edit_Temp ==10)CLCD_string(0xC0,"[10] Ext Fault A");
+			else if(edit_Temp ==11)CLCD_string(0xC0,"[11] Ext Fault B");
 			//else if(Temporary ==12)CLCD_string(0xC0,"[12] Motor Sel  ");
 			//else if(Temporary ==13)CLCD_string(0xC0,"[13] Mt Brk St  ");
 			//else if(Temporary ==14)CLCD_string(0xC0,"[14] Accel/Decel");
@@ -1835,6 +1874,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			//else if(Temporary ==27)CLCD_string(0xC0,"[27] Slv Opt Byp");
 			//else if(Temporary ==28)CLCD_string(0xC0,"[28] FlyingStart");
 			//else if(Temporary ==29)CLCD_string(0xC0,"[29] Disable P/B");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
@@ -1845,12 +1885,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] %           ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Hz          ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] %           ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Hz          ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1860,12 +1902,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)		 CLCD_string(0xC0," 0  0..20mA     ");
 			else if(Temporary == 1)CLCD_string(0xC0," 1  4..20mA     ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)		 CLCD_string(0xC0," 0  0..20mA     ");
 			else if(edit_Temp == 1)CLCD_string(0xC0," 1  4..20mA     ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1884,6 +1928,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 8)CLCD_string(0xC0,"8 Trim 0 mA     ");
 			else if(Temporary == 9)CLCD_string(0xC0,"9 Trim 4 mA     ");
 			else if(Temporary ==10)CLCD_string(0xC0,"10 Trim 20 mA   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1899,6 +1944,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(edit_Temp == 8)CLCD_string(0xC0,"8 Trim 0 mA     ");
 			else if(edit_Temp == 9)CLCD_string(0xC0,"9 Trim 4 mA     ");
 			else if(edit_Temp ==10)CLCD_string(0xC0,"10 Trim 20 mA   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1930,6 +1976,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			//else if(Temporary == 8)CLCD_string(0xC0,"8 JOG Status    ");
 			else if(Temporary == 9)CLCD_string(0xC0,"9 OV_OC_UV_Fn   ");
 			else if(Temporary ==10)CLCD_string(0xC0,"10 Free_Func    ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -1945,6 +1992,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			//else if(edit_Temp == 8)CLCD_string(0xC0,"8 JOG Status    ");
 			else if(edit_Temp == 9)CLCD_string(0xC0,"9 OV_OC_UV_Fn   ");
 			else if(edit_Temp ==10)CLCD_string(0xC0,"10 Free_Func    ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1967,12 +2015,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] Free        ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Locked      ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] Free        ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Locked      ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1982,12 +2032,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)		 CLCD_string(0xC0,"[0] Manual      ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Auto        ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)		 CLCD_string(0xC0,"[0] Manual      ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Auto        ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -1999,6 +2051,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Square      ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] User        ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] Free Func   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
@@ -2007,6 +2060,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Square      ");
 			else if(Temporary == 2)CLCD_string(0xC0,"[2] User        ");
 			else if(Temporary == 3)CLCD_string(0xC0,"[3] Free Func   ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -2016,12 +2070,14 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)     CLCD_string(0xC0,"[0] Default Set ");
 			else if(Temporary == 1)CLCD_string(0xC0,"[1] Auto Tuning ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
 			if(edit_Temp == 0)     CLCD_string(0xC0,"[0] Default Set ");
 			else if(edit_Temp == 1)CLCD_string(0xC0,"[1] Auto Tuning ");
+			else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
@@ -2215,6 +2271,8 @@ void SYS_ParameterDisplay(unsigned char mode)
 void SYS_ParameterEdt(unsigned int addr,unsigned int e_temp, unsigned char mode)
 {
 	char value[5];
+
+	gRequestAddr = addr;
 	
 	if(mode==EDIT_MODE_1)//unsigned int
 	{
@@ -2719,6 +2777,38 @@ void SYS_ParameterEdt(unsigned int addr,unsigned int e_temp, unsigned char mode)
 			else if(e_temp == 6) e_temp = 5;
 			else if(e_temp == 9) e_temp = 6;
 			else if(e_temp == 10) e_temp = 9;
+
+			RefreshFlag=1;
+		}
+	}
+	else if(mode==EDIT_MODE_0_1)//selset
+	{
+		if(KeyState.KeyValue == ENTER)
+		{
+			WriteDataMem(addr, e_temp);
+			Temporary = e_temp;
+			Edit_flag = 0;
+			posInpage = 0;
+			RefreshFlag=1;
+		}
+		else if(KeyState.KeyValue == ESC)
+		{
+			Edit_flag = 0;
+			posInpage = 0;
+			RefreshFlag=1;
+		}
+		else if(KeyState.KeyValue == UP)
+		{
+			if(e_temp == 0) e_temp = 1;
+			else if(e_temp == 1) e_temp = 0;
+
+		
+			RefreshFlag=1;
+		}
+		else if(KeyState.KeyValue == DN)
+		{
+			if(e_temp == 0) e_temp = 1;
+			else if(e_temp == 1) e_temp = 0;
 
 			RefreshFlag=1;
 		}
@@ -4794,7 +4884,7 @@ void SYS_2_03_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(287,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(287,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -4813,7 +4903,7 @@ void SYS_2_03_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(288,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(288,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -5139,7 +5229,7 @@ void SYS_2_03_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(305,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(305,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -5502,7 +5592,7 @@ void SYS_2_03_44(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(324,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(324,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -5654,7 +5744,7 @@ void SYS_2_03_52(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(332,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(332,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -5809,7 +5899,7 @@ void SYS_2_04_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(397,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(397,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -5828,7 +5918,7 @@ void SYS_2_04_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(398,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(398,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -6154,7 +6244,7 @@ void SYS_2_04_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(415,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(415,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -6479,7 +6569,7 @@ void SYS_2_04_42(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(432,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(432,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -6517,7 +6607,7 @@ void SYS_2_04_44(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(434,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(434,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -6650,7 +6740,7 @@ void SYS_2_04_51(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(441,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(441,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -6671,7 +6761,7 @@ void SYS_2_04_52(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(442,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(442,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -6941,7 +7031,7 @@ void SYS_2_05_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(513,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(513,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7055,7 +7145,7 @@ void SYS_2_05_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(519,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(519,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7190,7 +7280,7 @@ void SYS_2_05_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(526,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(526,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7209,7 +7299,7 @@ void SYS_2_05_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(527,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(527,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7228,7 +7318,7 @@ void SYS_2_05_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(528,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(528,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7306,7 +7396,7 @@ void SYS_2_05_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(532,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(532,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7325,7 +7415,7 @@ void SYS_2_05_33(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(533,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(533,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7344,7 +7434,7 @@ void SYS_2_05_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(534,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(534,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7363,7 +7453,7 @@ void SYS_2_05_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(535,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(535,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7382,7 +7472,7 @@ void SYS_2_05_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(536,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(536,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7401,7 +7491,7 @@ void SYS_2_05_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(537,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(537,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7576,7 +7666,7 @@ void SYS_2_06_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(601,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(601,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7786,7 +7876,7 @@ void SYS_2_06_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(612,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(612,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7805,7 +7895,7 @@ void SYS_2_06_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(613,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(613,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7824,7 +7914,7 @@ void SYS_2_06_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(614,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(614,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -7843,7 +7933,7 @@ void SYS_2_06_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(615,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(615,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8054,7 +8144,7 @@ void SYS_2_06_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(626,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(626,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8073,7 +8163,7 @@ void SYS_2_06_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(627,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(627,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8092,7 +8182,7 @@ void SYS_2_06_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(628,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(628,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8111,7 +8201,7 @@ void SYS_2_06_29(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(629,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(629,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8322,7 +8412,7 @@ void SYS_2_06_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(640,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(640,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8342,7 +8432,7 @@ void SYS_2_06_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(641,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(641,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8361,7 +8451,7 @@ void SYS_2_06_42(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(642,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(642,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8380,7 +8470,7 @@ void SYS_2_06_43(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(643,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(643,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8590,7 +8680,7 @@ void SYS_2_06_54(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(654,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(654,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8609,7 +8699,7 @@ void SYS_2_06_55(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(655,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(655,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8628,7 +8718,7 @@ void SYS_2_06_56(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(656,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(656,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8647,7 +8737,7 @@ void SYS_2_06_57(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(657,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(657,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8858,7 +8948,7 @@ void SYS_2_06_68(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(668,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(668,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8877,7 +8967,7 @@ void SYS_2_06_69(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(669,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(669,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8898,7 +8988,7 @@ void SYS_2_06_70(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(670,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(670,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -8998,7 +9088,7 @@ void SYS_2_07_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(754,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(754,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -9017,7 +9107,7 @@ void SYS_2_07_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(755,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(755,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -9246,7 +9336,7 @@ void SYS_2_07_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(767,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(767,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -9381,7 +9471,7 @@ void SYS_2_07_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(774,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(774,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -9478,13 +9568,13 @@ void SYS_2_08_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(810,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(810,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(810);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[0][0]));
-		SYS_ParameterDisplay(MODE_39);
+		SYS_ParameterDisplay(MODE_P8_0_selection);
 	}
 }
 void SYS_2_08_01(void)
@@ -9503,7 +9593,7 @@ void SYS_2_08_01(void)
 	{
 		Temporary = ReadDataMem(811);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[1][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_02(void)
@@ -9522,7 +9612,7 @@ void SYS_2_08_02(void)
 	{
 		Temporary = ReadDataMem(812);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[2][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_03(void)
@@ -9541,7 +9631,7 @@ void SYS_2_08_03(void)
 	{
 		Temporary = ReadDataMem(813);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[3][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_04(void)
@@ -9560,7 +9650,7 @@ void SYS_2_08_04(void)
 	{
 		Temporary = ReadDataMem(814);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[4][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_05(void)
@@ -9579,7 +9669,7 @@ void SYS_2_08_05(void)
 	{
 		Temporary = ReadDataMem(815);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[5][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_06(void)
@@ -9598,7 +9688,7 @@ void SYS_2_08_06(void)
 	{
 		Temporary = ReadDataMem(816);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[6][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_07(void)
@@ -9617,7 +9707,7 @@ void SYS_2_08_07(void)
 	{
 		Temporary = ReadDataMem(817);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[7][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_08(void)
@@ -9636,7 +9726,7 @@ void SYS_2_08_08(void)
 	{
 		Temporary = ReadDataMem(818);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[8][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_09(void)
@@ -9655,7 +9745,7 @@ void SYS_2_08_09(void)
 	{
 		Temporary = ReadDataMem(819);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[9][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
  
@@ -9675,7 +9765,7 @@ void SYS_2_08_10(void)
 	{
 		Temporary = ReadDataMem(820);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_08_XX[10][0]));
-		SYS_ParameterDisplay(MODE_P8select);
+		SYS_ParameterDisplay(MODE_P8_1to29_selection);
 	}
 }
 void SYS_2_08_11(void)
@@ -9688,7 +9778,7 @@ void SYS_2_08_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(821,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(821,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9707,7 +9797,7 @@ void SYS_2_08_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(822,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(822,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9726,7 +9816,7 @@ void SYS_2_08_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(823,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(823,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9745,7 +9835,7 @@ void SYS_2_08_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(824,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(824,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9764,7 +9854,7 @@ void SYS_2_08_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(825,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(825,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9783,7 +9873,7 @@ void SYS_2_08_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(826,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(826,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9802,7 +9892,7 @@ void SYS_2_08_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(827,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(827,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9821,7 +9911,7 @@ void SYS_2_08_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(828,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(828,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9840,7 +9930,7 @@ void SYS_2_08_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(829,  edit_Temp, EDIT_MODE_P8_123456);
+	SYS_ParameterEdt(829,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10171,7 +10261,7 @@ void SYS_2_09_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(876,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(876,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -10532,7 +10622,7 @@ void SYS_2_10_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(916,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(916,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -10575,7 +10665,7 @@ void SYS_2_11_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(941,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(941,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -10670,7 +10760,7 @@ void SYS_2_11_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(946,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(946,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -11089,7 +11179,7 @@ void SYS_2_14_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1010, edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1010, edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -11266,7 +11356,7 @@ void SYS_2_15_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1030, edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1030, edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -11495,7 +11585,7 @@ void SYS_2_15_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1042,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1042,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -11514,7 +11604,7 @@ void SYS_2_15_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1043,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1043,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -11826,7 +11916,7 @@ void SYS_2_16_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1090,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1090,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -12054,7 +12144,7 @@ void SYS_2_16_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1102,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1102,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -12073,7 +12163,7 @@ void SYS_2_16_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1103,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1103,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -12650,7 +12740,7 @@ void SYS_2_17_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1164,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1164,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -12669,7 +12759,7 @@ void SYS_2_17_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1165,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1165,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -13148,7 +13238,7 @@ void SYS_2_17_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1190,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1190,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{
@@ -13357,7 +13447,7 @@ void SYS_2_17_51(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1201,  edit_Temp, EDIT_MODE_4);
+	SYS_ParameterEdt(1201,  edit_Temp, EDIT_MODE_0_1);
 
 	if(RefreshFlag)
 	{

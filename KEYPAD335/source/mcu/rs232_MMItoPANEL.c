@@ -269,7 +269,7 @@ void SCI_Process(void)
 			TX0_char((char)(SCI_TxOffset>>8));					CRC_16((char)(SCI_TxOffset>>8));
 			TX0_char((char)SCI_TxOffset);							CRC_16((char)SCI_TxOffset);
 	                
-	            TX0_char((char)(DATA_Registers[SCI_TxOffset]>>8));	CRC_16((char)(DATA_Registers[SCI_TxOffset]>>8));
+	        TX0_char((char)(DATA_Registers[SCI_TxOffset]>>8));	CRC_16((char)(DATA_Registers[SCI_TxOffset]>>8));
 			TX0_char((char)DATA_Registers[SCI_TxOffset]);		CRC_16((char)DATA_Registers[SCI_TxOffset]);
 
 			TX0_char(CRC.Byte.b1);
@@ -306,6 +306,11 @@ void SCI_Process(void)
 				Communication_Fault_Cnt--;
 				Communication_Fault_Flag=0;
 			}
+		}
+
+		if(TimeTic_500ms)
+		{
+			SCI_RequestData(gRequestAddr);
 		}
 	}
 	else
