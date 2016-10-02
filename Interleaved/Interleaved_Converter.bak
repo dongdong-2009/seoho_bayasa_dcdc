@@ -1,0 +1,136 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="D:\Seoho\Interleaved\Interleaved_2011_03_28\"
+ProjectType=Executable
+CPUFamily=TMS320C28XX
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Tool="Linker"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="DCtoDC_include\analog_inout.h"
+Source="DCtoDC_include\cc.h"
+Source="DCtoDC_include\DEV_DAC.h"
+Source="DCtoDC_include\digital_inout.h"
+Source="DCtoDC_include\Fault.h"
+Source="DCtoDC_include\main_def.h"
+Source="DCtoDC_include\pwm.h"
+Source="DCtoDC_include\sci_bc.h"
+Source="DCtoDC_include\system.h"
+Source="DSP2833x_lib\rts2800_fpu32.lib"
+Source="DSP2833x_source\DSP2833x_ADC_cal.asm"
+Source="DSP2833x_source\DSP2833x_CodeStartBranch.asm"
+Source="DSP2833x_source\DSP2833x_CpuTimers.c"
+Source="DSP2833x_source\DSP2833x_CSMPasswords.asm"
+Source="DSP2833x_source\DSP2833x_DBGIER.asm"
+Source="DSP2833x_source\DSP2833x_DefaultIsr.c"
+Source="DSP2833x_source\DSP2833x_DisInt.asm"
+Source="DSP2833x_source\DSP2833x_DMA.c"
+Source="DSP2833x_source\DSP2833x_ECan.c"
+Source="DSP2833x_source\DSP2833x_GlobalVariableDefs.c"
+Source="DSP2833x_source\DSP2833x_I2C.c"
+Source="DSP2833x_source\DSP2833x_MemCopy.c"
+Source="DSP2833x_source\DSP2833x_PieCtrl.c"
+Source="DSP2833x_source\DSP2833x_PieVect.c"
+Source="DSP2833x_source\DSP2833x_SysCtrl.c"
+Source="DSP2833x_source\DSP2833x_usDelay.asm"
+Source="DSP2833x_source\DSP2833x_Xintf.c"
+Source="SRC\01_analog_inout.c"
+Source="SRC\02_digital_inout.c"
+Source="SRC\03_Communication.c"
+Source="SRC\04_DAC.c"
+Source="SRC\05_fault.c"
+Source="SRC\06_main_control.c"
+Source="SRC\07_main.c"
+Source="SRC\08_system.c"
+Source="SRC\09_pwm.c"
+Source="SRC\10_I2C_RTC.c"
+Source="SRC\11_I2C_eeprom.c"
+Source="SRC\debug_2833x.c"
+Source="SRC\SCI_BC.c"
+Source="SRC\seoho_gpio_set.c"
+Source="CMD\DSP2833x_Headers_nonBIOS.cmd"
+Source="CMD\F28335.cmd"
+
+["Compiler" Settings: "Debug"]
+Options=-gt -pdsw225 -fr"$(Proj_dir)\Debug" -i"D:\Seoho\Interleaved\Interleaved_2011_03_28\DSP2833x_include" -i"D:\Seoho\Interleaved\Interleaved_2011_03_28\DCtoDC_include" -d"_DEBUG" -d"LARGE_MODEL" -ml -v28 --float_support=fpu32
+
+["Compiler" Settings: "Release"]
+Options=-pdsw225 -o3 -fr"$(Proj_dir)\Release" -d"LARGE_MODEL" -ml -v28
+
+["Linker" Settings: "Debug"]
+Options=-c -m".\Debug\Interleaved_Converter.map" -o".\Debug\Interleaved_Converter.out" -stack0x400 -w -x
+
+["Linker" Settings: "Release"]
+Options=-c -m".\Release\Interleaved_Converter.map" -o".\Release\Interleaved_Converter.out" -w -x
+
+["DCtoDC_include\analog_inout.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\analog_inout.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\cc.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\cc.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\DEV_DAC.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\DEV_DAC.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\digital_inout.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\digital_inout.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\Fault.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\Fault.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\main_def.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\main_def.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\pwm.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\pwm.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\sci_bc.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\sci_bc.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\system.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["DCtoDC_include\system.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["CMD\DSP2833x_Headers_nonBIOS.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["CMD\DSP2833x_Headers_nonBIOS.cmd" Settings: "Release"]
+LinkOrder=1
+
+["CMD\F28335.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["CMD\F28335.cmd" Settings: "Release"]
+LinkOrder=1
+
