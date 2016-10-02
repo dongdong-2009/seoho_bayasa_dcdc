@@ -1072,7 +1072,7 @@ __flash char  PAGE_DIR_2_29_XX[27][17]={
 	"P29.3 Rtd_OutPwr",
 	"P29.4 ReactorRes",
 	"P29.5 ReactorInd",
-	"P29.6 V SensTime",
+	"P29.6 ChargeTime",
 	"P29.7 VC P-Gain ",
 	"P29.8 VC I-Gain ",
 	"P29.9 CC P-Gain ",
@@ -1991,7 +1991,8 @@ void SYS_ParameterDisplay(unsigned char mode)
 			else if(Temporary == 6)CLCD_string(0xC0," 6 WARNING Stats");
 			else if(Temporary == 7)CLCD_string(0xC0," 7 DIRECTION    ");
 			else if(Temporary == 8)CLCD_string(0xC0," 8 JOG Status   ");
-			else if(Temporary == 9)CLCD_string(0xC0," 9 OV_OC_UV_Fn  ");
+			else if(Temporary == 9)CLCD_string(0xC0," 9 OV_OC_UV_Fn  ");
+
 			//else if(Temporary ==10)CLCD_string(0xC0,"10 Free_Func    ");
 			//else CLCD_string(0xC0,(char*)_TEXT("irValue: %d     ",Temporary));
 			CLCD_cursor_OFF();
@@ -17558,7 +17559,7 @@ void SYS_4_00(void)
 		}
 		else if(KeyState.KeyValue == DN)
 		{
-			if(DATA_Registers[2382] == 1)DATA_Registers[2382] = DATA_Registers[2381];
+			if(DATA_Registers[2382] <= 1)DATA_Registers[2382] = DATA_Registers[2381];
 			else DATA_Registers[2382]--;
 			RefreshFlag = 1;
 		}
@@ -17573,7 +17574,7 @@ void SYS_4_00(void)
 	
 	if(RefreshFlag)
 	{
-		CLCD_string(0x80,(char*)_TEXT("Total Fault:%d   ",DATA_Registers[2379]));
+          CLCD_string(0x80,(char*)_TEXT("Total Fault:%d  ",DATA_Registers[2379]));
 		if(DATA_Registers[2381])
 		{
 			CLCD_string(0xC0,(char*)_TEXT(" % 2d Record(%02d)  ",DATA_Registers[2382],DATA_Registers[2382]));
@@ -17624,40 +17625,51 @@ void SYS_4_00_00(void)
 		if(Temporary==0)
 		{
 			//CLCD_string(0x80,((char*)_TEXT("20%02x/%02x/%02x %02x:%02x",DATA_Registers[2390]>>8,DATA_Registers[2390]&0x00FF,DATA_Registers[2391]>>8,DATA_Registers[2391]&0x00FF,DATA_Registers[2392]>>8,DATA_Registers[2392]&0x00FF))) ;
-			CLCD_string(0x80,((char*)_TEXT("%02x%02x%02x %02x:%02x:%02x",DATA_Registers[2390]>>8,DATA_Registers[2390]&0x00FF,DATA_Registers[2391]>>8,DATA_Registers[2391]&0x00FF,DATA_Registers[2392]>>8,DATA_Registers[2392]&0x00FF))) ;
+			CLCD_string(0x80,((char*)_TEXT("%02x%02x%02x %02x:%02x:%02x ",DATA_Registers[2390]>>8,DATA_Registers[2390]&0x00FF,DATA_Registers[2391]>>8,DATA_Registers[2391]&0x00FF,DATA_Registers[2392]>>8,DATA_Registers[2392]&0x00FF))) ;
 
 			if(DATA_Registers[2393])CLCD_string(0xC0,(char*)_cpy_flash2memory(&FAULT_CODE[DATA_Registers[2393]-1][0]));
 			else CLCD_string(0xC0,(char*)_TEXT(" irValue:% 3d",(int)DATA_Registers[2393]));
 		}
 		else if(Temporary==1)
 		{
-			CLCD_string(0x80,"Input Current   ");
+			CLCD_string(0x80,"*Input Current* ");
 			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u A    ",(int)DATA_Registers[2394]/10,DATA_Registers[2394]%10));
 		}
 		else if(Temporary==2)
 		{
-			CLCD_string(0x80,"Input Voltage   ");
+			CLCD_string(0x80,"*Input Voltage* ");
 			CLCD_string(0xC0,(char*)_TEXT("      % 5u V    ",(int)DATA_Registers[2395]));
 		}
 		else if(Temporary==3)
 		{
-			CLCD_string(0x80,"Output Voltage  ");
+			CLCD_string(0x80,"*Output Voltage*");
 			CLCD_string(0xC0,(char*)_TEXT("      % 5u V    ",(int)DATA_Registers[2396]));
 		}
 		else if(Temporary==4)
 		{
-			CLCD_string(0x80,"Temperature     ");
+			CLCD_string(0x80,"*Temperature*   ");
 			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u deg  ",(int)DATA_Registers[2397]/10,DATA_Registers[2397]%10));
 		}
 		else if(Temporary==5)
 		{
-			CLCD_string(0x80,"Input Power     ");
+			CLCD_string(0x80,"*Input Power*   ");
 			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u kW   ",(int)DATA_Registers[2398]/10,DATA_Registers[2398]%10));
 		}
-		else if(Temporary==6)
+		/*else if(Temporary==6)
 		{
 			CLCD_string(0x80,"Phase Current   ");
 			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u A    ",(int)DATA_Registers[2399]/10,DATA_Registers[2399]%10));
+		}*/
+		else if(Temporary==6)
+		{
+			CLCD_string(0x80,"*Fault State*   ");
+			if((int)DATA_Registers[2399]==0)CLCD_string(0xC0,"Converter Init  ");
+			else if((int)DATA_Registers[2399]==1)CLCD_string(0xC0,"Converter Stop  ");
+			else if((int)DATA_Registers[2399]==2)CLCD_string(0xC0,"Converter Run   ");
+			else if((int)DATA_Registers[2399]==3)CLCD_string(0xC0,"Converter Fault ");
+			else if((int)DATA_Registers[2399]==4)CLCD_string(0xC0,"Converter Re-Try");
+			else if((int)DATA_Registers[2399]==5)CLCD_string(0xC0,"Fault Record Rd ");			
+			else CLCD_string(0xC0,(char*)_TEXT(" irValue:% 3d",(int)DATA_Registers[2399]));
 		}
 
 	}

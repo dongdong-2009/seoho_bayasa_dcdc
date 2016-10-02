@@ -19,7 +19,7 @@
           
           
           
-        <Column0>189</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>223</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       <PreferedWindows><Position>1</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>SYMLIST</Factory></Window><Window><Factory>Locals</Factory></Window></Windows></PreferedWindows></Workspace>
       <Disassembly>
         
@@ -47,14 +47,14 @@
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>C:\KEYPAD335_110401_IAR_BISA\source\main.c</Filename><XPos>0</XPos><YPos>251</YPos><SelStart>4000</SelStart><SelEnd>4000</SelEnd></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>C:\KEYPAD335_110401_IAR_BISA\source\mcu\display.c</Filename><XPos>0</XPos><YPos>17494</YPos><SelStart>458815</SelStart><SelEnd>458815</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane/><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-00b0a080><key>iaridepm.enu1</key></Toolbar-00b0a080></Sizes></Row0><Row1><Sizes><Toolbar-03913b20><key>debuggergui.enu1</key></Toolbar-03913b20></Sizes></Row1></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>563</Bottom><Right>263</Right><x>-2</x><y>-2</y><xscreen>865</xscreen><yscreen>111</yscreen><sizeHorzCX>787079</sizeHorzCX><sizeHorzCY>152893</sizeHorzCY><sizeVertCX>241128</sizeVertCX><sizeVertCY>778237</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>94</Bottom><Right>1101</Right><x>-2</x><y>-2</y><xscreen>1103</xscreen><yscreen>96</yscreen><sizeHorzCX>1003640</sizeHorzCX><sizeHorzCY>132231</sizeHorzCY><sizeVertCX>83712</sizeVertCX><sizeVertCY>132231</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes><Wnd2><Rect><Top>0</Top><Left>0</Left><Bottom>0</Bottom><Right>0</Right><x>-2</x><y>-2</y><FloatX>577</FloatX><FloatY>392</FloatY><FloatWidth>812</FloatWidth><FloatHeight>454</FloatHeight><xscreen>157</xscreen><yscreen>149</yscreen><sizeHorzCX>142857</sizeHorzCX><sizeHorzCY>205234</sizeHorzCY><sizeVertCX>142857</sizeVertCX><sizeVertCY>205234</sizeVertCY></Rect></Wnd2><Wnd3><Rect><Top>0</Top><Left>0</Left><Bottom>555819297</Bottom><Right>555819312</Right><x>-2</x><y>-2</y><FloatX>808</FloatX><FloatY>344</FloatY><FloatWidth>200</FloatWidth><FloatHeight>200</FloatHeight><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>181984</sizeHorzCX><sizeHorzCY>275482</sizeHorzCY><sizeVertCX>181984</sizeVertCX><sizeVertCY>275482</sizeVertCY></Rect></Wnd3></Sizes></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-00b0a078><key>iaridepm.enu1</key></Toolbar-00b0a078></Sizes></Row0><Row1><Sizes><Toolbar-041088e8><key>debuggergui.enu1</key></Toolbar-041088e8></Sizes></Row1></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>642</Bottom><Right>297</Right><x>-2</x><y>-2</y><xscreen>977</xscreen><yscreen>125</yscreen><sizeHorzCX>787268</sizeHorzCX><sizeHorzCY>152999</sizeHorzCY><sizeVertCX>240935</sizeVertCX><sizeVertCY>788250</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>106</Bottom><Right>1243</Right><x>-2</x><y>-2</y><xscreen>1245</xscreen><yscreen>108</yscreen><sizeHorzCX>1003223</sizeHorzCX><sizeHorzCY>132191</sizeHorzCY><sizeVertCX>83803</sizeVertCX><sizeVertCY>132191</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes><Wnd2><Rect><Top>0</Top><Left>0</Left><Bottom>0</Bottom><Right>7</Right><x>-2</x><y>-2</y><FloatX>462</FloatX><FloatY>211</FloatY><FloatWidth>812</FloatWidth><FloatHeight>454</FloatHeight><xscreen>177</xscreen><yscreen>168</yscreen><sizeHorzCX>142627</sizeHorzCX><sizeHorzCY>205630</sizeHorzCY><sizeVertCX>142627</sizeVertCX><sizeVertCY>205630</sizeVertCY></Rect></Wnd2><Wnd3><Rect><Top>0</Top><Left>0</Left><Bottom>0</Bottom><Right>67895560</Right><x>-2</x><y>-2</y><FloatX>808</FloatX><FloatY>344</FloatY><FloatWidth>200</FloatWidth><FloatHeight>200</FloatHeight><xscreen>226</xscreen><yscreen>225</yscreen><sizeHorzCX>182111</sizeHorzCX><sizeHorzCY>275398</sizeHorzCY><sizeVertCX>182111</sizeVertCX><sizeVertCY>275398</sizeVertCY></Rect></Wnd3></Sizes></Float></Positions>
   </Desktop>
 </Project>
 
