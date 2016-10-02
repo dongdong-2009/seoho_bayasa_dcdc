@@ -358,6 +358,9 @@ void SCI_RegisterRefresh(void)
 	TX0_char(CRC.Byte.b1);
 	TX0_char(CRC.Byte.b0);
 
+	DATA_Registers[0x0C7B]=1;
+	SCI_Registers[0x0C7B]=0;
+
 }
 
 

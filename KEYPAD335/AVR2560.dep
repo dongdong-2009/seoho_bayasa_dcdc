@@ -6,50 +6,48 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>C:\Program Files\Common Files\IAR Systems\License\Lms.log</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\AVR2560.pbd</file>
-      <file>$PROJ_DIR$\Debug\Obj\display.r90</file>
-      <file>$PROJ_DIR$\source\mcu\debug_printf.h</file>
-      <file>$PROJ_DIR$\Debug\List\AVR2560.map</file>
-      <file>$PROJ_DIR$\Debug\Obj\rs232_MMItoPANEL.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\key.pbi</file>
-      <file>$PROJ_DIR$\Debug\List\key.lst</file>
-      <file>$PROJ_DIR$\Debug\List\16by2CLCD.s90</file>
-      <file>$PROJ_DIR$\Debug\Exe\AVR2560.hex</file>
-      <file>$PROJ_DIR$\Debug\Obj\16by2CLCD.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\key.r90</file>
-      <file>$PROJ_DIR$\Debug\List\16by2CLCD.lst</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.r90</file>
-      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
-      <file>$TOOLKIT_DIR$\inc\iom2560.h</file>
-      <file>$TOOLKIT_DIR$\inc\clib\string.h</file>
-      <file>$TOOLKIT_DIR$\inc\clib\stdarg.h</file>
-      <file>$TOOLKIT_DIR$\inc\clib\sysmac.h</file>
-      <file>$PROJ_DIR$\Debug\List\main.s90</file>
       <file>$TOOLKIT_DIR$\lib\clib\cl5s-ec_mul.r90</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\rs232_MMItoPANEL.r90</file>
-      <file>$TOOLKIT_DIR$\src\template\cfg5s.xcl</file>
-      <file>$PROJ_DIR$\Debug\List\util.lst</file>
-      <file>$TOOLKIT_DIR$\inc\clib\stdio.h</file>
-      <file>$TOOLKIT_DIR$\src\template\cfgm2560.xcl</file>
-      <file>$PROJ_DIR$\Debug\Obj\util.r90</file>
-      <file>$PROJ_DIR$\Debug\List\util.s90</file>
-      <file>$PROJ_DIR$\Debug\List\rs232_MMItoPANEL.lst</file>
-      <file>$TOOLKIT_DIR$\inc\inavr.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\16by2CLCD.r90</file>
-      <file>$PROJ_DIR$\Debug\List\rs232_MMItoPANEL.s90</file>
-      <file>$PROJ_DIR$\Debug\Obj\util.pbi</file>
-      <file>$PROJ_DIR$\Debug\List\main.lst</file>
-      <file>$PROJ_DIR$\Debug\List\display.lst</file>
-      <file>$PROJ_DIR$\Debug\Obj\display.pbi</file>
       <file>$PROJ_DIR$\Debug\List\display.s90</file>
-      <file>$PROJ_DIR$\source\mcu\key.c</file>
+      <file>$PROJ_DIR$\Debug\List\AVR2560.map</file>
+      <file>$TOOLKIT_DIR$\src\template\cfg5s.xcl</file>
+      <file>$PROJ_DIR$\Debug\Obj\16by2CLCD.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.r90</file>
+      <file>$TOOLKIT_DIR$\inc\clib\stdio.h</file>
+      <file>$PROJ_DIR$\Debug\List\rs232_MMItoPANEL.s90</file>
+      <file>$TOOLKIT_DIR$\inc\inavr.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\rs232_MMItoPANEL.pbi</file>
+      <file>$PROJ_DIR$\Debug\List\rs232_MMItoPANEL.lst</file>
+      <file>$PROJ_DIR$\Debug\List\16by2CLCD.lst</file>
+      <file>$PROJ_DIR$\Debug\List\key.s90</file>
+      <file>$TOOLKIT_DIR$\inc\clib\sysmac.h</file>
+      <file>$PROJ_DIR$\Debug\List\main.lst</file>
+      <file>$TOOLKIT_DIR$\inc\clib\stdlib.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\16by2CLCD.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\util.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\clib\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\iom2560.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\display.r90</file>
+      <file>$TOOLKIT_DIR$\src\template\cfgm2560.xcl</file>
+      <file>$PROJ_DIR$\Debug\List\16by2CLCD.s90</file>
+      <file>$PROJ_DIR$\Debug\List\main.s90</file>
+      <file>$PROJ_DIR$\source\mcu\debug_printf.h</file>
+      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
+      <file>$PROJ_DIR$\Debug\List\util.lst</file>
+      <file>$PROJ_DIR$\Debug\Obj\key.pbi</file>
+      <file>$PROJ_DIR$\Debug\List\util.s90</file>
+      <file>$PROJ_DIR$\Debug\List\display.lst</file>
+      <file>$PROJ_DIR$\Debug\Obj\key.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\AVR2560.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\util.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\clib\string.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\display.pbi</file>
       <file>$PROJ_DIR$\source\mcu\16by2CLCD.h</file>
       <file>$PROJ_DIR$\source\mcu\16by2CLCD.c</file>
-      <file>$TOOLKIT_DIR$\inc\clib\stdlib.h</file>
-      <file>$PROJ_DIR$\Debug\List\key.s90</file>
+      <file>$PROJ_DIR$\Debug\Obj\rs232_MMItoPANEL.r90</file>
+      <file>$PROJ_DIR$\Debug\Exe\AVR2560.hex</file>
+      <file>$PROJ_DIR$\source\mcu\key.c</file>
       <file>$PROJ_DIR$\source\mcu\key.h</file>
       <file>$PROJ_DIR$\source\mcu\display.c</file>
       <file>$PROJ_DIR$\source\mcu\display.h</file>
@@ -59,60 +57,23 @@
       <file>$PROJ_DIR$\source\mcu\type.h</file>
       <file>$PROJ_DIR$\source\mcu\util.c</file>
       <file>$PROJ_DIR$\source\mcu\util.h</file>
+      <file>$PROJ_DIR$\Debug\List\key.lst</file>
     </outputs>
-    <file>
-      <name>$PROJ_DIR$\Debug\Obj\AVR2560.pbd</name>
-      <inputs>
-        <tool>
-          <name>BILINK</name>
-          <file> 11 37 7 1 6 34</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Debug\Exe\AVR2560.hex</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 5</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 27 24 32 3 12 14 23 28 21</file>
-        </tool>
-      </inputs>
-    </file>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 10 5</file>
+          <file> 2 40</file>
         </tool>
       </outputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\source\mcu\key.c</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 43 8 12</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 7</file>
-        </tool>
-      </outputs>
+      <name>$PROJ_DIR$\Debug\Obj\AVR2560.pbd</name>
       <inputs>
         <tool>
-          <name>ICCAVR</name>
-          <file> 31 22 16 15 44 4</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 31 22 16 15 44 4</file>
+          <name>BILINK</name>
+          <file> 4 36 28 18 9 33</file>
         </tool>
       </inputs>
     </file>
@@ -121,21 +82,59 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 9 13 32</file>
+          <file> 23 11 16</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 11</file>
+          <file> 4</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 31 22 16 15 26 18 19 40 52</file>
+          <file> 8 34 20 26 6 19 13 37 50</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 31 22 16 15 26 18 19 40 52</file>
+          <file> 8 34 20 26 6 19 13 37 50</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\AVR2560.hex</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 2</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 22 3 16 21 31 5 39 17 0</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\mcu\key.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 12 51 31</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 28</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 8 34 20 26 42 25</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 8 34 20 26 42 25</file>
         </tool>
       </inputs>
     </file>
@@ -144,21 +143,21 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 38 36 3</file>
+          <file> 1 30 21</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 37</file>
+          <file> 36</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 31 22 16 15 44 52 40 49 46 42 19 18 17 4</file>
+          <file> 8 34 20 26 42 50 37 47 44 15 13 19 35 25</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 31 22 16 15 44 52 40 49 46 42 19 18 17 4</file>
+          <file> 8 34 20 26 42 50 37 47 44 15 13 19 35 25</file>
         </tool>
       </inputs>
     </file>
@@ -167,21 +166,21 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 20 35 14</file>
+          <file> 24 14 5</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 1</file>
+          <file> 18</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 31 22 16 15 40 44 49 46 52 4</file>
+          <file> 8 34 20 26 37 42 47 44 50 25</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 31 22 16 15 40 44 49 46 52 4</file>
+          <file> 8 34 20 26 37 42 47 44 50 25</file>
         </tool>
       </inputs>
     </file>
@@ -190,21 +189,21 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 33 30 23</file>
+          <file> 7 10 39</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 6</file>
+          <file> 9</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 31 22 16 15 17 19 50 52 49 46</file>
+          <file> 8 34 20 26 35 13 48 50 47 44</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 31 22 16 15 17 19 50 52 49 46</file>
+          <file> 8 34 20 26 35 13 48 50 47 44</file>
         </tool>
       </inputs>
     </file>
@@ -213,21 +212,21 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 29 25 28</file>
+          <file> 29 27 17</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 34</file>
+          <file> 33</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 52</file>
+          <file> 50</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 52</file>
+          <file> 50</file>
         </tool>
       </inputs>
     </file>
@@ -235,34 +234,25 @@
   <configuration>
     <name>Release</name>
     <outputs>
-      <file>$TOOLKIT_DIR$\src\template\cfg5soim.xcl</file>
-      <file>$PROJ_DIR$\Release\Obj\AVR2560.pbd</file>
-      <file>$PROJ_DIR$\Release\Exe\AVR2560.hex</file>
-      <file>$PROJ_DIR$\Release\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\Release\Obj\main.r90</file>
-      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
-      <file>$TOOLKIT_DIR$\inc\iom2560.h</file>
       <file>$TOOLKIT_DIR$\lib\clib\cl5s-ec_mul.r90</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$TOOLKIT_DIR$\src\template\cfgm2560.xcl</file>
+      <file>$PROJ_DIR$\Release\Exe\AVR2560.hex</file>
       <file>$TOOLKIT_DIR$\inc\inavr.h</file>
+      <file>$PROJ_DIR$\Release\Obj\main.r90</file>
+      <file>$TOOLKIT_DIR$\src\template\cfg5soim.xcl</file>
+      <file>$PROJ_DIR$\Release\Obj\main.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\iom2560.h</file>
+      <file>$TOOLKIT_DIR$\src\template\cfgm2560.xcl</file>
+      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
+      <file>$PROJ_DIR$\Release\Obj\AVR2560.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
       <file>$PROJ_DIR$\source\main.c</file>
     </outputs>
-    <file>
-      <name>$PROJ_DIR$\Release\Obj\AVR2560.pbd</name>
-      <inputs>
-        <tool>
-          <name>BILINK</name>
-          <file> 3</file>
-        </tool>
-      </inputs>
-    </file>
     <file>
       <name>$PROJ_DIR$\Release\Exe\AVR2560.hex</name>
       <inputs>
         <tool>
           <name>XLINK</name>
-          <file> 9 0 4 7</file>
+          <file> 7 4 3 0</file>
         </tool>
       </inputs>
     </file>
@@ -271,30 +261,39 @@
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 2</file>
+          <file> 1</file>
         </tool>
       </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Release\Obj\AVR2560.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 5</file>
+        </tool>
+      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\source\main.c</name>
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 4</file>
+          <file> 3</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 3</file>
+          <file> 5</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 10 8 6 5</file>
+          <file> 2 10 6 8</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 10 8 6 5</file>
+          <file> 2 10 6 8</file>
         </tool>
       </inputs>
     </file>

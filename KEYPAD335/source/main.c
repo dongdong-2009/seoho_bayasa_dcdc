@@ -272,7 +272,7 @@ int main(void)
 	CLCD_initialize();                             // initialize text LCD module
 
 	CLCD_string(0x80," Seoho Electric");          // display title
-	CLCD_string(0xC0,"    AC Drive");
+	CLCD_string(0xC0,"     Device");
 
 	CLCD_BackLightOnOff(1);
 

@@ -1,34 +1,34 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V5.30.0.50166/W32 for Atmel AVR    19/Feb/2011  13:59:38 #
+# IAR C/C++ Compiler V5.30.0.50166/W32 for Atmel AVR    27/Feb/2011  19:38:57 #
 # Copyright 1996-2009 IAR Systems AB.                                         #
 #                                                                             #
-#    Source file  =  C:\Documents and Settings\uesr\My Documents\네이트온     #
-#                    받은 파일\KEYPAD335_110218_IAR_BISA\source\main.c        #
-#    Command line =  "C:\Documents and Settings\uesr\My Documents\네이트온    #
-#                    받은 파일\KEYPAD335_110218_IAR_BISA\source\main.c"       #
-#                    --cpu=m2560 -ms -o "C:\Documents and Settings\uesr\My    #
-#                    Documents\네이트온 받은 파일\KEYPAD335_110218_IAR_BISA\D #
-#                    ebug\Obj\" -lC "C:\Documents and Settings\uesr\My        #
-#                    Documents\네이트온 받은 파일\KEYPAD335_110218_IAR_BISA\D #
-#                    ebug\List\" -lA "C:\Documents and Settings\uesr\My       #
-#                    Documents\네이트온 받은 파일\KEYPAD335_110218_IAR_BISA\D #
-#                    ebug\List\" -y --initializers_in_flash -z3 --no_cse      #
+#    Source file  =  C:\Documents and Settings\idonno2000\바탕                #
+#                    화면\KEYPAD335_110218_IAR_BISA\source\main.c             #
+#    Command line =  "C:\Documents and Settings\idonno2000\바탕               #
+#                    화면\KEYPAD335_110218_IAR_BISA\source\main.c"            #
+#                    --cpu=m2560 -ms -o "C:\Documents and                     #
+#                    Settings\idonno2000\바탕 화면\KEYPAD335_110218_IAR_BISA\ #
+#                    Debug\Obj\" -lC "C:\Documents and                        #
+#                    Settings\idonno2000\바탕 화면\KEYPAD335_110218_IAR_BISA\ #
+#                    Debug\List\" -lA "C:\Documents and                       #
+#                    Settings\idonno2000\바탕 화면\KEYPAD335_110218_IAR_BISA\ #
+#                    Debug\List\" -y --initializers_in_flash -z3 --no_cse     #
 #                    --no_inline --no_code_motion --no_cross_call             #
 #                    --no_clustering --no_tbaa --debug --enable_external_bus  #
 #                    -DENABLE_BIT_DEFINITIONS -e --enable_multibytes -I       #
 #                    "C:\Program Files\IAR Systems\Embedded Workbench         #
 #                    5.3\avr\INC\" -I "C:\Program Files\IAR Systems\Embedded  #
 #                    Workbench 5.3\avr\INC\CLIB\" --eeprom_size 4096          #
-#    List file    =  C:\Documents and Settings\uesr\My Documents\네이트온     #
-#                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\List\main.lst  #
-#    Object file  =  C:\Documents and Settings\uesr\My Documents\네이트온     #
-#                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\Obj\main.r90   #
+#    List file    =  C:\Documents and Settings\idonno2000\바탕                #
+#                    화면\KEYPAD335_110218_IAR_BISA\Debug\List\main.lst       #
+#    Object file  =  C:\Documents and Settings\idonno2000\바탕                #
+#                    화면\KEYPAD335_110218_IAR_BISA\Debug\Obj\main.r90        #
 #                                                                             #
 #                                                                             #
 ###############################################################################
 
-C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_IAR_BISA\source\main.c
+C:\Documents and Settings\idonno2000\바탕 화면\KEYPAD335_110218_IAR_BISA\source\main.c
       1          //====================================================
       2          //
       3          // Copyright(C) 2008 HanYoung ELEC. Co., LTD.
@@ -913,9 +913,9 @@ C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_
    \   00000010   ....               LDI     R19, (`?<Constant " Seoho Electric">`) >> 8
    \   00000012   E800               LDI     R16, 128
    \   00000014   ........           CALL    CLCD_string
-    275          	CLCD_string(0xC0,"    AC Drive");
-   \   00000018   ....               LDI     R18, LOW(`?<Constant "    AC Drive">`)
-   \   0000001A   ....               LDI     R19, (`?<Constant "    AC Drive">`) >> 8
+    275          	CLCD_string(0xC0,"     Device");
+   \   00000018   ....               LDI     R18, LOW(`?<Constant "     Device">`)
+   \   0000001A   ....               LDI     R19, (`?<Constant "     Device">`) >> 8
    \   0000001C   EC00               LDI     R16, 192
    \   0000001E   ........           CALL    CLCD_string
     276          
@@ -1101,10 +1101,9 @@ C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_
    \              69720063    
 
    \                                 In  segment NEAR_ID, align 1, keep-with-next
-   \                     `?<Initializer for <Constant "    AC Drive">>`:
-   \   00000000   202020204341       DC8 "    AC Drive"
-   \              442069726576
-   \              00          
+   \                     `?<Initializer for <Constant "     Device">>`:
+   \   00000000   202020204420       DC8 "     Device"
+   \              766563690065
 
    \                                 In  segment NEAR_ID, align 1, keep-with-next
    \                     `?<Initializer for PacketCMD>`:
@@ -1138,9 +1137,9 @@ C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_
 
    \                                 In  segment NEAR_I, align 1, keep-with-next
    \   00000000                      REQUIRE `?<Segment init: NEAR_I>`
-   \                     `?<Constant "    AC Drive">`:
-   \   00000000                      DS8 13
-   \   0000000D                      REQUIRE `?<Initializer for <Constant "    AC Drive">>`
+   \                     `?<Constant "     Device">`:
+   \   00000000                      DS8 12
+   \   0000000C                      REQUIRE `?<Initializer for <Constant "     Device">>`
 
    Maximum stack usage in bytes:
 
@@ -1247,7 +1246,7 @@ C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_
      main                                            290
      ??TIMER1_ISR??INTVEC 68                           4
      ?<Initializer for <Constant " Seoho Electric">   16
-     ?<Initializer for <Constant "    AC Drive">>     13
+     ?<Initializer for <Constant "     Device">>      12
      ?<Initializer for PacketCMD>                      1
      ?<Initializer for _10ms_Cnt>                      1
      ?<Initializer for _100ms_Cnt>                     1
@@ -1255,7 +1254,7 @@ C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_
      ?<Initializer for _500ms_Cnt>                     1
      ?<Initializer for _1s_Cnt>                        1
      ?<Constant " Seoho Electric">                    16
-     ?<Constant "    AC Drive">                       13
+     ?<Constant "     Device">                        12
       Others                                          14
 
  
@@ -1263,12 +1262,12 @@ C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_
  1 000 bytes in segment FARCODE
     14 bytes in segment INITTAB
      4 bytes in segment INTVEC
-    35 bytes in segment NEAR_I
-    35 bytes in segment NEAR_ID
+    34 bytes in segment NEAR_I
+    34 bytes in segment NEAR_ID
    121 bytes in segment NEAR_Z
  
- 1 035 bytes of CODE memory (+ 18 bytes shared)
-   156 bytes of DATA memory (+ 29 bytes shared)
+ 1 034 bytes of CODE memory (+ 18 bytes shared)
+   155 bytes of DATA memory (+ 29 bytes shared)
 
 Errors: none
 Warnings: none

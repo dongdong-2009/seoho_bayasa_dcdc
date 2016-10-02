@@ -138,8 +138,12 @@
 #define MODE_3d_1u_A 56
 #define MODE_5d 57
 #define MODE_5d_rms 58
-#define MODE_3d_1u_mF 59
-#define MODE_3d_1u_mH 60
+#define MODE_5u_uF 59
+#define MODE_5d_A 60
+#define MODE_5d_V 61
+#define MODE_3d_1u_mOhm 62
+#define MODE_3d_1u_mH 63
+
 
 unsigned int DATA_Registers[BUF_MAX];
 
@@ -276,7 +280,7 @@ __flash char  PAGE_DIR_1_1_XX_BISA[5][17]={
 };
 
 __flash char  PAGE_DIR_1_2_XX_BISA[8][17]={
-	"0 Interleaved DC",
+	"0 DC to DC      ",
 	"1 Control Method",
 	"2 RUN/STOP Src  ",
 	"3 Ref Method    ",
@@ -1450,12 +1454,12 @@ void SYS_ParameterDisplay(unsigned char mode)
 	{
 		if(!Edit_flag)
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 5u Hz   ",Temporary/10,Temporary%10));
+			CLCD_string(0xC0,(char*)_TEXT("      % 5u Hz   ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 5u Hz   ",edit_Temp/10,edit_Temp%10));
+			CLCD_string(0xC0,(char*)_TEXT("      % 5u Hz   ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_1);
 		}	
 	}
@@ -1463,12 +1467,12 @@ void SYS_ParameterDisplay(unsigned char mode)
 	{
 		if(!Edit_flag)
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 5u kHz  ",Temporary/10,Temporary%10));
+			CLCD_string(0xC0,(char*)_TEXT("      % 5u kHz  ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 5u kHz  ",edit_Temp/10,edit_Temp%10));
+			CLCD_string(0xC0,(char*)_TEXT("      % 5u kHz  ",edit_Temp));
 			SYS_cursor_ON_Mode(CURSOR_MODE_1);
 		}
 
@@ -2116,16 +2120,57 @@ void SYS_ParameterDisplay(unsigned char mode)
 			SYS_cursor_ON_Mode(CURSOR_MODE_1);
 		}
 	}
-	else if(mode == MODE_3d_1u_mF)
+	else if(mode == MODE_5u_uF)
 	{
 		if(!Edit_flag)
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u mF   ",(int)Temporary/10,Temporary%10));
+			CLCD_string(0xC0,(char*)_TEXT("      % 5u uF   ",Temporary));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u mF   ",(int)edit_Temp/10,edit_Temp%10));
+			CLCD_string(0xC0,(char*)_TEXT("      % 5u uF   ",edit_Temp));
+			SYS_cursor_ON_Mode(CURSOR_MODE_1);
+		}
+	}
+	else if(mode == MODE_5d_A)
+	{
+		if(!Edit_flag)
+		{
+			CLCD_string(0xC0,(char*)_TEXT("      % 5d A    ",Temporary));
+			CLCD_cursor_OFF();
+		}
+		else
+		{
+			CLCD_string(0xC0,(char*)_TEXT("      % 5d A    ",edit_Temp));
+			SYS_cursor_ON_Mode(CURSOR_MODE_1);
+		}
+
+	}
+	else if(mode == MODE_5d_V)
+	{
+		if(!Edit_flag)
+		{
+			CLCD_string(0xC0,(char*)_TEXT("      % 5d V    ",Temporary));
+			CLCD_cursor_OFF();
+		}
+		else
+		{
+			CLCD_string(0xC0,(char*)_TEXT("      % 5d V    ",edit_Temp));
+			SYS_cursor_ON_Mode(CURSOR_MODE_1);
+		}
+
+	}
+	else if(mode == MODE_3d_1u_mOhm)
+	{
+		if(!Edit_flag)
+		{
+			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u mOhm ",(int)Temporary/10,Temporary%10));
+			CLCD_cursor_OFF();
+		}
+		else
+		{
+			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u mOhm ",(int)edit_Temp/10,edit_Temp%10));
 			SYS_cursor_ON_Mode(CURSOR_MODE_6);
 		}
 	}
@@ -2133,12 +2178,12 @@ void SYS_ParameterDisplay(unsigned char mode)
 	{
 		if(!Edit_flag)
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u mH   ",(int)Temporary/10,Temporary%10));
+			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u mH  ",(int)Temporary/10,Temporary%10));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u mH   ",(int)edit_Temp/10,edit_Temp%10));
+			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u mH  ",(int)edit_Temp/10,edit_Temp%10));
 			SYS_cursor_ON_Mode(CURSOR_MODE_6);
 		}
 	}
@@ -2759,7 +2804,7 @@ void SYS_0_0(void)
 	else if(KeyState.KeyValue == DN)
 	{
 		Temporary = ReadDataMem(PID_ref);
-		MenuDisplay = SYS_0_5;
+		MenuDisplay = SYS_0_1;
 	}
 	else if(KeyState.KeyValue == UP)
 	{
@@ -2785,6 +2830,35 @@ void SYS_0_0(void)
 	}
 }
 
+void SYS_0_1(void)
+{
+	if(!Edit_flag)
+	{
+		if(KeyState.KeyValue == ESC)MenuDisplay = SYS_0;
+		else if(KeyState.KeyValue == DN)MenuDisplay = SYS_0_0;
+		else if(KeyState.KeyValue == UP)MenuDisplay = SYS_0_0;
+		else if(KeyState.KeyValue == ENTER)
+		{
+			Edit_flag = 1;
+			posInpage = 1;
+			edit_Temp = Temporary ;
+		}
+	}
+	else
+	{
+		SYS_ParameterEdt(2301, edit_Temp, CURSOR_MODE_4);
+	}
+
+	if(RefreshFlag)
+	{
+		Temporary = ReadDataMem(2301);
+		CLCD_string(0x80,"[1] Vdc_Out_Set ");
+		SYS_ParameterDisplay(MODE_5d_V);
+	}
+}
+
+
+#if 0
 void SYS_0_1(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_0;
@@ -2923,6 +2997,7 @@ void SYS_0_5(void)
 	}
 }
 
+#endif
 
 void SYS_1_0(void)
 {
@@ -2985,7 +3060,7 @@ void SYS_1_0_00(void)
 	{
 		Temporary = ReadDataMem(2310);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[0][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_V);
+		SYS_ParameterDisplay(MODE_5u_V);
 	}
 }
 void SYS_1_0_01(void)
@@ -3004,7 +3079,7 @@ void SYS_1_0_01(void)
 	{
 		Temporary = ReadDataMem(2311);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[1][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_V);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_1_0_02(void)
@@ -3023,7 +3098,7 @@ void SYS_1_0_02(void)
 	{
 		Temporary = ReadDataMem(2312);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[2][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5u_V);
 	}
 }
 void SYS_1_0_03(void)
@@ -3042,7 +3117,7 @@ void SYS_1_0_03(void)
 	{
 		Temporary = ReadDataMem(2313);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[3][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_1_0_04(void)
@@ -3061,7 +3136,7 @@ void SYS_1_0_04(void)
 	{
 		Temporary = ReadDataMem(2314);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[4][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_1_0_05(void)
@@ -3081,7 +3156,7 @@ void SYS_1_0_05(void)
 	{
 		Temporary = ReadDataMem(2315);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[5][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_1_0_06(void)
@@ -3100,7 +3175,7 @@ void SYS_1_0_06(void)
 	{
 		Temporary = ReadDataMem(2316);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[6][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_1_0_07(void)
@@ -3119,7 +3194,7 @@ void SYS_1_0_07(void)
 	{
 		Temporary = ReadDataMem(2317);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[7][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_V);
 	}
 }
 void SYS_1_0_08(void)
@@ -3176,7 +3251,7 @@ void SYS_1_0_10(void)
 	{
 		Temporary = ReadDataMem(2320);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[10][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_1_0_11(void)
@@ -3195,7 +3270,7 @@ void SYS_1_0_11(void)
 	{
 		Temporary = ReadDataMem(2321);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[11][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_1_0_12(void)
@@ -3214,7 +3289,7 @@ void SYS_1_0_12(void)
 	{
 		Temporary = ReadDataMem(2322);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_0_XX_BISA[12][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_1_0_13(void)
@@ -3333,7 +3408,8 @@ void SYS_1_2_00(void)
 	if(RefreshFlag){
 		Temporary = ReadDataMem(2323);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_2_XX_BISA[0][0]));
-		SYS_ParameterDisplay(MODE_5d);
+		//SYS_ParameterDisplay(MODE_5d);
+		CLCD_string(0xC0," Interleaved DC ");
 	}
 }
 void SYS_1_2_01(void)
@@ -3344,7 +3420,8 @@ void SYS_1_2_01(void)
 	if(RefreshFlag){
 		Temporary = ReadDataMem(2351);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_2_XX_BISA[1][0]));
-		SYS_ParameterDisplay(MODE_5d);
+		//SYS_ParameterDisplay(MODE_5d);
+		CLCD_string(0xC0," Double Loop VI ");
 	}
 }
 void SYS_1_2_02(void)
@@ -3413,7 +3490,8 @@ void SYS_1_2_06(void)
 	if(RefreshFlag){
 		Temporary = ReadDataMem(2356);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_2_XX_BISA[6][0]));
-		SYS_ParameterDisplay(MODE_5d);
+		CLCD_string(0xC0,(char*)_TEXT("      %d      ",(int)DATA_Registers[200]));
+		//SYS_ParameterDisplay(MODE_5d);
 	}
 }
 void SYS_1_2_07(void)
@@ -3424,7 +3502,8 @@ void SYS_1_2_07(void)
 	if(RefreshFlag){
 		Temporary = ReadDataMem(2357);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_2_XX_BISA[7][0]));
-		SYS_ParameterDisplay(MODE_5d);
+		CLCD_string(0xC0,(char*)_TEXT("   Ver %d.%01d%c    ",(int)DATA_Registers[201]/100,(int)DATA_Registers[201]%100,(int)DATA_Registers[202] ));
+		//SYS_ParameterDisplay(MODE_5d);
 	}
 }
  
@@ -10368,7 +10447,7 @@ void SYS_2_11_00(void)
 	{
 		Temporary = ReadDataMem(940);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_11_XX[0][0]));
-		SYS_ParameterDisplay(MODE_42);
+		SYS_ParameterDisplay(MODE_43);
 	}
 }
 void SYS_2_11_01(void)
@@ -10387,7 +10466,7 @@ void SYS_2_11_01(void)
 	{
 		Temporary = ReadDataMem(941);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_11_XX[1][0]));
-		SYS_ParameterDisplay(MODE_43);
+		SYS_ParameterDisplay(MODE_42);
 	}
 }
 void SYS_2_11_02(void)
@@ -16482,7 +16561,7 @@ void SYS_2_29_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1870,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1870,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16501,13 +16580,13 @@ void SYS_2_29_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1871,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1871,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1871);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[1][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_V);
+		SYS_ParameterDisplay(MODE_5d_V);
 	}
 }
 void SYS_2_29_02(void)
@@ -16520,13 +16599,13 @@ void SYS_2_29_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1872,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1872,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1872);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[2][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_V);
+		SYS_ParameterDisplay(MODE_5d_V);
 	}
 }
 void SYS_2_29_03(void)
@@ -16539,7 +16618,7 @@ void SYS_2_29_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1873,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1873,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16559,13 +16638,13 @@ void SYS_2_29_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1873,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1874,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1874);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[4][0]));
-		SYS_ParameterDisplay(MODE_5u_mOhm);
+		SYS_ParameterDisplay(MODE_3d_1u_mOhm);
 	}
 }
 void SYS_2_29_05(void)
@@ -16578,7 +16657,7 @@ void SYS_2_29_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1873,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1875,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16597,13 +16676,13 @@ void SYS_2_29_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1873,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1876,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1876);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[6][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_mH);
+		SYS_ParameterDisplay(MODE_3d_1u_ms);
 	}
 }
 void SYS_2_29_07(void)
@@ -16616,7 +16695,7 @@ void SYS_2_29_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1873,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1877,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16635,7 +16714,7 @@ void SYS_2_29_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1878,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1878,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16654,7 +16733,7 @@ void SYS_2_29_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1879,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1879,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16674,7 +16753,7 @@ void SYS_2_29_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1880,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1880,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16693,7 +16772,7 @@ void SYS_2_29_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1881,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1881,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16712,13 +16791,13 @@ void SYS_2_29_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1882,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1882,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1882);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[12][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_mF);
+		SYS_ParameterDisplay(MODE_5u_uF);
 	}
 }
 void SYS_2_29_13(void)
@@ -16731,13 +16810,13 @@ void SYS_2_29_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1883,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1883,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1883);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[13][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_mF);
+		SYS_ParameterDisplay(MODE_5u_uF);
 	}
 }
 void SYS_2_29_14(void)
@@ -16750,13 +16829,13 @@ void SYS_2_29_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1884,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1884,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1884);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[14][0]));
-		SYS_ParameterDisplay(MODE_5u_Hz);
+		SYS_ParameterDisplay(MODE_3d_1u_Hz);
 	}
 }
 void SYS_2_29_15(void)
@@ -16769,13 +16848,13 @@ void SYS_2_29_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1885,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1885,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1885);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[15][0]));
-		SYS_ParameterDisplay(MODE_5u_Hz);
+		SYS_ParameterDisplay(MODE_3d_1u_Hz);
 	}
 }
 void SYS_2_29_16(void)
@@ -16788,7 +16867,7 @@ void SYS_2_29_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1886,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1886,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16807,7 +16886,7 @@ void SYS_2_29_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1887,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1887,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16826,7 +16905,7 @@ void SYS_2_29_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1888,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1888,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16846,7 +16925,7 @@ void SYS_2_29_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1888,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1889,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16866,13 +16945,13 @@ void SYS_2_29_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1890,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1890,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1890);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[20][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_A);
+		SYS_ParameterDisplay(MODE_5d_A);
 	}
 }
 void SYS_2_29_21(void)
@@ -16885,13 +16964,13 @@ void SYS_2_29_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1891,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1891,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1891);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[21][0]));
-		SYS_ParameterDisplay(MODE_5u_persent);
+		SYS_ParameterDisplay(MODE_3d_1u_persent);
 	}
 }
 void SYS_2_29_22(void)
@@ -16904,13 +16983,13 @@ void SYS_2_29_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1892,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1892,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1892);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[22][0]));
-		SYS_ParameterDisplay(MODE_5u_persent);
+		SYS_ParameterDisplay(MODE_3d_1u_persent);
 	}
 }
 void SYS_2_29_23(void)
@@ -16923,13 +17002,13 @@ void SYS_2_29_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1893,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1893,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1893);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[23][0]));
-		SYS_ParameterDisplay(MODE_5u_persent);
+		SYS_ParameterDisplay(MODE_3d_1u_persent);
 	}
 }
 void SYS_2_29_24(void)
@@ -16942,13 +17021,13 @@ void SYS_2_29_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1893,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1894,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1894);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[24][0]));
-		SYS_ParameterDisplay(MODE_5u_s);
+		SYS_ParameterDisplay(MODE_3d_1u_s);
 	}
 }
 void SYS_2_29_25(void)
@@ -16961,13 +17040,13 @@ void SYS_2_29_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1893,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1895,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1895);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_29_XX[25][0]));
-		SYS_ParameterDisplay(MODE_5u_s);
+		SYS_ParameterDisplay(MODE_3d_1u_s);
 	}
 }
 void SYS_2_29_26(void)
@@ -16980,7 +17059,7 @@ void SYS_2_29_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1896,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1896,  edit_Temp, CURSOR_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -20037,7 +20116,7 @@ void MainSYSTEM(void)
 		PORTL_Bit2 = 1;
 	}
 //communication fault
-#if 1
+#if 0
 if(Communication_Fault_Flag)
 {
 	PORTL_Bit3 = 1;
@@ -20054,7 +20133,7 @@ else
 	MenuDisplay_Handler = MENU_RUN;
 }
 #endif
-#if 0
+#if 1
 //fault detection
 	if(DATA_Registers[2379] != FaultDetectionHistory)
 	{
@@ -20064,19 +20143,35 @@ else
 		if(DATA_Registers[2376] & 0x8000) 	CLCD_string(0xC0,"F1 Over_Load	  ");
 		else if(DATA_Registers[2376] & 0x4000) CLCD_string(0xC0,"F2 Device_chort ");
 		else if(DATA_Registers[2376] & 0x2000) CLCD_string(0xC0,"F3 Over_Current ");
-		else if(DATA_Registers[2376] & 0x1000) CLCD_string(0xC0,"F4 Over_Voltage ");
-		else if(DATA_Registers[2376] & 0x0800) CLCD_string(0xC0,"F5 Under_Voltage");
+		else if(DATA_Registers[2376] & 0x1000) CLCD_string(0xC0,"F4 Output_OV    ");
+		else if(DATA_Registers[2376] & 0x0800) CLCD_string(0xC0,"F5 Output_UV    ");
 		else if(DATA_Registers[2376] & 0x0400) CLCD_string(0xC0,"F6 Over_Speed   ");
 		else if(DATA_Registers[2376] & 0x0200) CLCD_string(0xC0,"F7 Over_Temp    ");
-		else if(DATA_Registers[2376] & 0x0100) CLCD_string(0xC0,"F8 DB_Fault	  ");
+		else if(DATA_Registers[2376] & 0x0100) CLCD_string(0xC0,"F8 DB_Fault	 ");
 		else if(DATA_Registers[2376] & 0x0080) CLCD_string(0xC0,"F9 Driver_Fault ");
 		else if(DATA_Registers[2376] & 0x0040) CLCD_string(0xC0,"F10 Ext_Fault   ");
-		else if(DATA_Registers[2376] & 0x0020) CLCD_string(0xC0,"F11 HW_Fault	  ");
+		else if(DATA_Registers[2376] & 0x0020) CLCD_string(0xC0,"F11 HW_Fault	 ");
 		else if(DATA_Registers[2376] & 0x0010) CLCD_string(0xC0,"F12 Over_Curr_A ");
 		else if(DATA_Registers[2376] & 0x0008) CLCD_string(0xC0,"F13 Over_Curr_B ");
 		else if(DATA_Registers[2376] & 0x0004) CLCD_string(0xC0,"F14 Over_Curr_C ");
 		else if(DATA_Registers[2376] & 0x0002) CLCD_string(0xC0,"F15 Init_Charge ");
 		else if(DATA_Registers[2376] & 0x0001) CLCD_string(0xC0,"F16 Speed_Detect");
+		else if(DATA_Registers[2377] & 0x8000) CLCD_string(0xC0,"F17         	 ");
+		else if(DATA_Registers[2377] & 0x4000) CLCD_string(0xC0,"F18 Input_OV    ");
+		else if(DATA_Registers[2377] & 0x2000) CLCD_string(0xC0,"F19 Input_UV    ");
+		else if(DATA_Registers[2377] & 0x1000) CLCD_string(0xC0,"F20         	 ");
+		else if(DATA_Registers[2377] & 0x0800) CLCD_string(0xC0,"F21         	 ");
+		else if(DATA_Registers[2377] & 0x0400) CLCD_string(0xC0,"F22         	 ");
+		else if(DATA_Registers[2377] & 0x0200) CLCD_string(0xC0,"F23         	 ");
+		else if(DATA_Registers[2377] & 0x0100) CLCD_string(0xC0,"F24         	 ");
+		else if(DATA_Registers[2377] & 0x0080) CLCD_string(0xC0,"F25             ");
+		else if(DATA_Registers[2377] & 0x0040) CLCD_string(0xC0,"F26         	 ");
+		else if(DATA_Registers[2377] & 0x0020) CLCD_string(0xC0,"F27         	 ");
+		else if(DATA_Registers[2377] & 0x0010) CLCD_string(0xC0,"F28         	 ");
+		else if(DATA_Registers[2377] & 0x0008) CLCD_string(0xC0,"F29         	 ");
+		else if(DATA_Registers[2377] & 0x0004) CLCD_string(0xC0,"F30         	 ");
+		else if(DATA_Registers[2377] & 0x0002) CLCD_string(0xC0,"F31         	 ");
+		else if(DATA_Registers[2377] & 0x0001) CLCD_string(0xC0,"F32         	 ");
 		else
 		{
 			FaultDetectionHistory = (unsigned char)DATA_Registers[2379]; 

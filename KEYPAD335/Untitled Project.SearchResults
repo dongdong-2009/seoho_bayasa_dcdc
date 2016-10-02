@@ -1,1 +1,4 @@
----- PAGE_DIR_1_2_XX_BISA Matches (0 in 0 files) ----
+---- MODE_3d_1u_mOhm Matches (3 in 1 files) ----
+Display.c (source\mcu):#define MODE_3d_1u_mOhm 62
+Display.c (source\mcu):	else if(mode == MODE_3d_1u_mOhm)
+Display.c (source\mcu):		SYS_ParameterDisplay(MODE_3d_1u_mOhm);

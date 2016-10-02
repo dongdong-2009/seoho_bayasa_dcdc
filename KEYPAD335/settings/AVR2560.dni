@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1062359174
+Checksum=-481642206
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -20,15 +20,12 @@ ByteLimit=50
 [TraceHelper]
 Enabled=0
 ShowSource=1
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\source\mcu\display.c}.16972.1@1" 1 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\source\mcu\display.c}.16975.2@1" 1 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\source\mcu\display.c}.16991.1@1" 1 0 0 0 "" 0 ""
-Count=3
+Count=0

@@ -1,31 +1,30 @@
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                            /
-// IAR C/C++ Compiler V5.30.0.50166/W32 for Atmel AVR   19/Feb/2011  13:59:38 /
+// IAR C/C++ Compiler V5.30.0.50166/W32 for Atmel AVR   27/Feb/2011  17:26:26 /
 // Copyright 1996-2009 IAR Systems AB.                                        /
 //                                                                            /
-//    Source file  =  C:\Documents and Settings\uesr\My Documents\네이트온    /
-//                    받은 파일\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MM /
-//                    ItoPANEL.c                                              /
-//    Command line =  "C:\Documents and Settings\uesr\My Documents\네이트온   /
-//                    받은 파일\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MM /
-//                    ItoPANEL.c" --cpu=m2560 -ms -o "C:\Documents and        /
-//                    Settings\uesr\My Documents\네이트온 받은                /
-//                    파일\KEYPAD335_110218_IAR_BISA\Debug\Obj\" -lC          /
-//                    "C:\Documents and Settings\uesr\My Documents\네이트온   /
-//                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\List\" -lA    /
-//                    "C:\Documents and Settings\uesr\My Documents\네이트온   /
-//                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\List\" -y     /
-//                    --initializers_in_flash -z3 --no_cse --no_inline        /
-//                    --no_code_motion --no_cross_call --no_clustering        /
-//                    --no_tbaa --debug --enable_external_bus                 /
-//                    -DENABLE_BIT_DEFINITIONS -e --enable_multibytes -I      /
+//    Source file  =  C:\Documents and Settings\idonno2000\바탕               /
+//                    화면\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMItoPA /
+//                    NEL.c                                                   /
+//    Command line =  "C:\Documents and Settings\idonno2000\바탕              /
+//                    화면\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMItoPA /
+//                    NEL.c" --cpu=m2560 -ms -o "C:\Documents and             /
+//                    Settings\idonno2000\바탕 화면\KEYPAD335_110218_IAR_BISA /
+//                    \Debug\Obj\" -lC "C:\Documents and                      /
+//                    Settings\idonno2000\바탕 화면\KEYPAD335_110218_IAR_BISA /
+//                    \Debug\List\" -lA "C:\Documents and                     /
+//                    Settings\idonno2000\바탕 화면\KEYPAD335_110218_IAR_BISA /
+//                    \Debug\List\" -y --initializers_in_flash -z3 --no_cse   /
+//                    --no_inline --no_code_motion --no_cross_call            /
+//                    --no_clustering --no_tbaa --debug                       /
+//                    --enable_external_bus -DENABLE_BIT_DEFINITIONS -e       /
+//                    --enable_multibytes -I "C:\Program Files\IAR            /
+//                    Systems\Embedded Workbench 5.3\avr\INC\" -I             /
 //                    "C:\Program Files\IAR Systems\Embedded Workbench        /
-//                    5.3\avr\INC\" -I "C:\Program Files\IAR                  /
-//                    Systems\Embedded Workbench 5.3\avr\INC\CLIB\"           /
-//                    --eeprom_size 4096                                      /
-//    List file    =  C:\Documents and Settings\uesr\My Documents\네이트온    /
-//                    받은 파일\KEYPAD335_110218_IAR_BISA\Debug\List\rs232_MM /
-//                    ItoPANEL.s90                                            /
+//                    5.3\avr\INC\CLIB\" --eeprom_size 4096                   /
+//    List file    =  C:\Documents and Settings\idonno2000\바탕               /
+//                    화면\KEYPAD335_110218_IAR_BISA\Debug\List\rs232_MMItoPA /
+//                    NEL.s90                                                 /
 //                                                                            /
 //                                                                            /
 ///////////////////////////////////////////////////////////////////////////////
@@ -240,7 +239,7 @@ USART0_TX_ISR       SYMBOL "USART0_TX_ISR"
         EXTERN DATA_Registers
         EXTERN TimeTic_1s
 
-// C:\Documents and Settings\uesr\My Documents\네이트온 받은 파일\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMItoPANEL.c
+// C:\Documents and Settings\idonno2000\바탕 화면\KEYPAD335_110218_IAR_BISA\source\mcu\rs232_MMItoPANEL.c
 //    1 //==============================================================================================
 //    2 //
 //    3 // Copyright(C) 2008 HanYoung ELEC. Co., LTD.
@@ -1991,7 +1990,18 @@ SCI_RegisterRefresh:
         LDS     R16, CRC
         RCALL   TX0_char
 //  360 
-//  361 }
+//  361 	DATA_Registers[0x0C7B]=1;
+        LDI     R16, 1
+        LDI     R17, 0
+        STS     (DATA_Registers + 6390), R16
+        STS     (DATA_Registers + 6391), R17
+//  362 	SCI_Registers[0x0C7B]=0;
+        LDI     R16, 0
+        LDI     R17, 0
+        STS     (SCI_Registers + 6390), R16
+        STS     (SCI_Registers + 6391), R17
+//  363 
+//  364 }
         LD      R24, Y+
         CFI R24 SameValue
         CFI CFA_Y Y+1
@@ -2000,17 +2010,17 @@ SCI_RegisterRefresh:
         CFI CFA_Y Y+0
         RET
         CFI EndBlock cfiBlock8
-//  362 
-//  363 
-//  364 #pragma vector = USART0_TX_vect
+//  365 
+//  366 
+//  367 #pragma vector = USART0_TX_vect
 
         RSEG FARCODE:CODE:NOROOT(1)
-//  365 __interrupt void USART0_TX_ISR(void)
+//  368 __interrupt void USART0_TX_ISR(void)
 USART0_TX_ISR:
         CFI Block cfiBlock9 Using cfiCommon1
         CFI Function USART0_TX_ISR
-//  366 //ISR(USART0_TX_vect)             // USART2 Tx Complete interrupt
-//  367 {
+//  369 //ISR(USART0_TX_vect)             // USART2 Tx Complete interrupt
+//  370 {
         ST      -Y, R19
         CFI R19 Frame(CFA_Y, -1)
         CFI CFA_Y Y+1
@@ -2027,11 +2037,11 @@ USART0_TX_ISR:
         IN      R18, 0x3B
         IN      R19, 0x3C
         REQUIRE __RSTACK_in_external_ram_new_way
-//  368 	UCSR0B = UCSR0B | 0x10;
+//  371 	UCSR0B = UCSR0B | 0x10;
         LDS     R16, 193
         ORI     R16, 0x10
         STS     193, R16
-//  369 }
+//  372 }
         OUT     0x3C, R19
         OUT     0x3B, R18
         OUT     0x3F, R17
@@ -2095,18 +2105,18 @@ __?XMCRA:
         REQUIRE ?need_segment_init
 
         END
-//  370 
-//  371 
+//  373 
+//  374 
 // 
 //     6 bytes in segment ABSOLUTE
-// 1 842 bytes in segment FARCODE
+// 1 866 bytes in segment FARCODE
 //    14 bytes in segment INITTAB
 //     8 bytes in segment INTVEC
 //     2 bytes in segment NEAR_I
 //     2 bytes in segment NEAR_ID
 // 6 829 bytes in segment NEAR_Z
 // 
-// 1 844 bytes of CODE memory (+ 22 bytes shared)
+// 1 868 bytes of CODE memory (+ 22 bytes shared)
 // 6 831 bytes of DATA memory (+  6 bytes shared)
 //
 //Errors: none
