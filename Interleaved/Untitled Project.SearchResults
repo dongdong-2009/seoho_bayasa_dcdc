@@ -1,13 +1,2 @@
----- Rx_index Matches (13 in 4 files) ----
-07_main.c (src):			Word_Write_data(Rx_index, Data_Registers[Rx_index]);
-SCI_BC - 복사본.c (src):Uint16 Rx_index= 0;
-SCI_BC - 복사본.c (src):					Rx_index= RxAddr;
-SCI_BC - 복사본.c (src):					Read_Data_Registers(Rx_index);	// 직접 RxAddr 및 RxData 를 읽는다
-SCI_BC - 복사본.c (src):					Rx_index= RxAddr;
-SCI_BC - 복사본.c (src):					Read_Data_Registers(Rx_index);
-SCI_BC.c (src):Uint16 Rx_index= 0;
-SCI_BC.c (src):					Rx_index= RxAddr;
-SCI_BC.c (src):					Read_Data_Registers(Rx_index);	// 직접 RxAddr 및 RxData 를 읽는다
-SCI_BC.c (src):					Rx_index= RxAddr;
-SCI_BC.c (src):					Read_Data_Registers(Rx_index);
-Sci_bc.h (dctodc_include):extern Uint16 Rx_index;
+---- DEV_IM Matches (1 in 1 files) ----
+Sci_bc.h (dctodc_include):#define DEV_IM		0x01

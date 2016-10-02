@@ -82,17 +82,6 @@
 #define BIT14_MASK   	0x4000
 #define BIT15_MASK   	0x8000
 
-//통신 데이터 어레이
-#define Buf_MAX 3400		             // RYU
-
-//extern WORD Data_Registers[Buf_MAX];  // RYU
-//extern WORD Temp_Registers[Buf_MAX];  // RYU
-extern WORD reg_TxOffset; 
-//-- Serial Data Stack  
-extern WORD Data_Registers[Buf_MAX];
-extern WORD CAN_Registers[Buf_MAX];
-extern WORD SCI_Registers[Buf_MAX];  
-
 
 /* micro-seconds delay function */
 // TI SDK 1.10의 소스 DSP2833x_usDelay.asm에서 제공하는 DELAY_US 함수를 사용

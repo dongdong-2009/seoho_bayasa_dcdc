@@ -14,9 +14,9 @@
 
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
+#include "main_def.h"
 
-#include "DSK2833x_Define.h"
-//#include "main_def.h"
+
 
 
 
@@ -30,13 +30,19 @@ typedef	union
 	} Byte;
 } CRC_flg ;
 
+// SCI-B, SCI-C Interrupt Service Function 선언
+#pragma CODE_SECTION(scib_tx_isr, "ramfuncs");
+#pragma CODE_SECTION(scib_rx_isr, "ramfuncs");
+#pragma CODE_SECTION(scic_tx_isr, "ramfuncs");
+#pragma CODE_SECTION(scic_rx_isr, "ramfuncs");
+
 #define	CPUCLK			150000000L							// CPU Main Clock
 #define	SCIB_LSPCLK		(CPUCLK/4)							// Peripheral Low Speed Clock for SCI-B
 #define	SCIB_BAUDRATE	115200L								// SCI-B Baudrate
 #define	SCIB_BRR_VAL	(SCIB_LSPCLK/(8*SCIB_BAUDRATE)-1)	// SCI-B BaudRate 설정 Register 값
 
 #define	SCIC_LSPCLK		(CPUCLK/4)							// Peripheral Low Speed Clock for SCI-C
-#define	SCIC_BAUDRATE	19200L								// SCI-C Baudrate
+#define	SCIC_BAUDRATE	115200L								// SCI-C Baudrate
 //#define	SCIC_BAUDRATE	9600L								// SCI-C Baudrate
 #define	SCIC_BRR_VAL	(SCIC_LSPCLK/(8*SCIC_BAUDRATE)-1)	// SCI-C BaudRate 설정 Register 값
 
@@ -83,23 +89,46 @@ typedef	union
 #define RESPONSE	0x03
 #define REQUEST		0x04
 
-#define Buf_MAX 3400
-#ifdef _SCI_BC_
-unsigned int SciC_RxStep=0;
-unsigned int SciC_RxFlag=0;
-unsigned int SciC_TxFlag=0;
-unsigned int Communication_Fault_Cnt = 3;
-unsigned int Communication_Fault_Flag = 0;
 
-unsigned int Device_type=0;
+#define DEV_IM		0x01
+#define DEV_DCDC	0x02
+#define DEV_PMSM	0x03
 
-unsigned int EEPROM_WRITE_ENABLE_Rx = 0;
-unsigned int EEPROM_WRITE_ENABLE_Tx = 0;
-unsigned int RxType=0;
-unsigned int RxAddr=0;
-unsigned int RxData=0;
-unsigned int RxCRC=0;
-unsigned char RxBuf[9];
+//통신 데이터 어레이
+#define Buf_MAX 3400		             // RYU
+
+extern unsigned int EEPROM_WRITE_ENABLE_Rx;
+extern unsigned int EEPROM_WRITE_ENABLE_Tx;
+
+//변수 통신 관련
+extern Uint16 Rx_index;
+extern Uint16 Tx_index;
+extern Uint16 TxIntervalCnt;
+extern Uint16 TxInterval_1s;
+extern int Dummy_comm;
+extern CRC_flg	CRC;
+extern long Test_count_Rx;
+extern long Test_count_Tx;
+extern int Rx_counter_1s;
+extern int Tx_counter_1s;
+extern long CRC_check_counter;
+
+
+extern char scib_tx_buf[SCIB_BUF_SIZE+1];
+extern char scib_tx_pos, scib_tx_end;
+extern char scib_rx_buf[SCIB_BUF_SIZE+1];
+extern char scib_rxd;
+
+extern char scic_tx_buf[SCIC_BUF_SIZE+1];
+extern char scic_tx_pos, scic_tx_end;
+extern char scic_rx_buf[SCIC_BUF_SIZE+1];
+extern char scic_rxd;
+
+//-- Serial Data Stack  
+extern WORD Data_Registers[Buf_MAX];
+extern WORD CAN_Registers[Buf_MAX];
+extern WORD SCI_Registers[Buf_MAX];  
+
 
 void scib_init(void);
 void scic_init(void);
@@ -120,52 +149,10 @@ interrupt void scib_tx_isr(void);
 interrupt void scib_rx_isr(void);
 interrupt void scic_tx_isr(void);
 interrupt void scic_rx_isr(void);
-// SCI-B, SCI-C Interrupt Service Function 선언
-#pragma CODE_SECTION(scib_tx_isr, "ramfuncs");
-#pragma CODE_SECTION(scib_rx_isr, "ramfuncs");
-#pragma CODE_SECTION(scic_tx_isr, "ramfuncs");
-#pragma CODE_SECTION(scic_rx_isr, "ramfuncs"); 
+
 void scic_test(void);
 void CRC_16(unsigned char input);
-
-
-
-//-- Serial Data Stack  
-
-
-#else
-
-extern unsigned int EEPROM_WRITE_ENABLE_Rx;
-extern unsigned int EEPROM_WRITE_ENABLE_Tx;
-extern unsigned int RxType;
-extern unsigned int RxAddr;
-extern unsigned int RxData;
-extern unsigned int RxCRC;
-extern unsigned char RxBuf[9];
-
-extern WORD Data_Registers[Buf_MAX];
-extern WORD CAN_Registers[Buf_MAX];
-extern WORD SCI_Registers[Buf_MAX];
-
-//변수 통신 관련
-extern Uint16 Rx_index;
-extern Uint16 Tx_index;
-extern Uint16 Tx_count_25ms;
-extern Uint16 Tx_count_1s;
-extern int Dummy_comm;
-extern CRC_flg	CRC;
-
-extern char scib_tx_buf[SCIB_BUF_SIZE+1];
-extern char scib_tx_pos, scib_tx_end;
-extern char scib_rx_buf[SCIB_BUF_SIZE+1];
-extern char scib_rxd;
-
-extern char scic_tx_buf[SCIC_BUF_SIZE+1];
-extern char scic_tx_pos, scic_tx_end;
-extern char scic_rx_buf[SCIC_BUF_SIZE+1];
-extern char scic_rxd; 
-
 #endif
 
-#endif
+
 

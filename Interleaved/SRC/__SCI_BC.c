@@ -15,42 +15,11 @@
 #include "main_def.h"
 #include "sci_bc.h"
 
-extern float Tsamp;
-//extern void Read_Data_Registers(int Parameter_index);
 
-//변수 통신 관련
-Uint16 Rx_index= 0;
-Uint16 Tx_index= 0;
-Uint16 Tx_count_25ms= 0;
-Uint16 Tx_count_1s= 0;
-int Dummy_comm= 0;
-
-CRC_flg	CRC ;
-
-/* Variables for Serial Communication  */
-char scib_tx_buf[SCIB_BUF_SIZE+1];
-char scib_tx_pos=0, scib_tx_end=0;
-char scib_rx_buf[SCIB_BUF_SIZE+1];
-
-char scib_rxd=' ';
-
-char scic_tx_buf[SCIC_BUF_SIZE+1];
-char scic_tx_pos=0, scic_tx_end=0;
-char scic_rx_buf[SCIC_BUF_SIZE+1];
-
-char scic_rxd=' '; 
-
-//-- Serial Data Stack  
-WORD Data_Registers[Buf_MAX];
-WORD CAN_Registers[Buf_MAX];
-WORD SCI_Registers[Buf_MAX];
 
 /************************************************************************/
 /*      Initialize SCI                                                  */
 /************************************************************************/
-/*---------------------------------------------*/
-/*      Initialize SCI                         */
-/*---------------------------------------------*/
 
 void scib_init(void)
 {
@@ -420,7 +389,7 @@ interrupt void scic_rx_isr(void)
 					SciC_TxFlag = 1;
 					//SCIC_TX_START;
 
-					// (110317 by dbsgln)
+				// (110317 by dbsgln) 110329
 					Rx_index= RxAddr;
 					Read_Data_Registers(Rx_index);
 					EEPROM_WRITE_ENABLE_Rx= 1;
@@ -500,8 +469,9 @@ void SCIC_Process(void)
 
 if (Device_type== 0)
 {
-	if(Tx_count_25ms>= (Uint16)(30e-3/Tsamp)) // 25.
+	if(Tx_count_25ms>= (Uint16)(20e-3/Tsamp)) // 25.
 	{
+			test_led2_toggle;
 		if (Tx_count_1s>=(Uint16)(1.0/Tsamp))
 		{
 			CRC.Word = 0;
@@ -563,6 +533,7 @@ if (Device_type== 0)
 		}
 
 		Tx_count_25ms= 0;
+
 	}
 
 	if ( (Data_Registers[SCI_TxOffset] == SCI_Registers[SCI_TxOffset])&&(Tx_complete== 1) )

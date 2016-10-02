@@ -95,8 +95,18 @@ typedef unsigned long      Uint32;
 typedef unsigned long long Uint64;
 typedef float              float32;
 typedef long double        float64;
+//100819 변수형 추가 HHH
+typedef char				BOOL;
+typedef unsigned char		BYTE;			
+typedef unsigned int		WORD;			
+typedef unsigned long		LONG;			
+typedef unsigned long long	LLONG;
+#define PBYTE(X)		*(volatile BYTE *)(X)
+#define PWORD(X)		*(volatile WORD *)(X)
+#define PLONG(X)		*(volatile LONG *)(X)
+#define PLLONG(X)		*(volatile LLONG *)(X)  
+			
 #endif
-
 
 //---------------------------------------------------------------------------
 // Include All Peripheral Header Files:

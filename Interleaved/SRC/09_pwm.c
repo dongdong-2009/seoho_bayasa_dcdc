@@ -1,8 +1,6 @@
 #define _PWM_
 #include "main_def.h"
 
-extern Uint16 Tx_count_25ms;		// RYU
-extern Uint16 Tx_count_1s;			// RYU
 
 void GetAnaMonitCount(unsigned int * piChA, unsigned * piChB);
 interrupt void epwm1_timer_isr(void);
@@ -211,8 +209,10 @@ interrupt void epwm1_timer_isr(void)
 {
 
 	EPwm1Regs.ETSEL.bit.INTSEL = ET_CTR_PRD;
-	Tx_count_25ms++;		// RYU
-	Tx_count_1s++;			// RYU 
+	TxIntervalCnt++;		// RYU
+	TxInterval_1s++;			// RYU 
+
+	
 	current_controller_1();
 
 	DUTY_A =  Idc_Err_PI_a / Vdc_out ;
