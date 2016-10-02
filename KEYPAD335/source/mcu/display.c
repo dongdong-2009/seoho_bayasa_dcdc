@@ -39,6 +39,9 @@
 
 #define EDIT_MODE_0 0
 #define EDIT_MODE_1 1
+#define EDIT_MODE_2 2
+#define EDIT_MODE_3 3
+#define EDIT_MODE_4 4
 
 #define CURSOR_MODE_0 0
 #define CURSOR_MODE_1 1
@@ -83,7 +86,7 @@
 
 #define MODE_5u_mOhm 54
 
-#define MODE_3d_1u_pu 44
+#define MODE_1d_4u_pu 44
 
 #define MODE_3d_1u_persent 16
 #define MODE_5u_persent 52
@@ -143,6 +146,7 @@
 #define MODE_5d_V 61
 #define MODE_3d_1u_mOhm 62
 #define MODE_3d_1u_mH 63
+#define MODE_1d_3u_pu 64
 
 
 unsigned int DATA_Registers[BUF_MAX];
@@ -1866,7 +1870,7 @@ void SYS_ParameterDisplay(unsigned char mode)
 		{
 			if(Temporary == 0)		 CLCD_string(0xC0,"0 Output Freq   ");
 			else if(Temporary == 1)CLCD_string(0xC0,"1 Motor Speed   ");
-			else if(Temporary == 2)CLCD_string(0xC0,"2 Output Current");
+			else if(Temporary == 2)CLCD_string(0xC0,"2 Input Current ");
 			else if(Temporary == 3)CLCD_string(0xC0,"3 Output Voltage");
 			else if(Temporary == 4)CLCD_string(0xC0,"4 Actual Torque ");
 			else if(Temporary == 5)CLCD_string(0xC0,"5 Output Power  ");
@@ -1893,17 +1897,17 @@ void SYS_ParameterDisplay(unsigned char mode)
 			SYS_cursor_ON_Mode(CURSOR_MODE_4);
 		}
 	}
-	else if(mode == MODE_3d_1u_pu)
+	else if(mode == MODE_1d_4u_pu)
 	{
 		if(!Edit_flag)
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u p.u  ",(int)Temporary/10,Temporary%10));
+			CLCD_string(0xC0,(char*)_TEXT("    % 1d.%04u p.u  ",(int)Temporary/10000,(int)Temporary%10000));
 			CLCD_cursor_OFF();
 		}
 		else
 		{
-			CLCD_string(0xC0,(char*)_TEXT("      % 3d.% 1u p.u  ",(int)edit_Temp/10,edit_Temp%10));
-			SYS_cursor_ON_Mode(CURSOR_MODE_6);
+			CLCD_string(0xC0,(char*)_TEXT("    % 1d.%04u p.u  ",(int)edit_Temp/10000,(int)edit_Temp%10000));
+			SYS_cursor_ON_Mode(CURSOR_MODE_8);
 		}
 	}
 	else if(mode == MODE_45)
@@ -2187,6 +2191,19 @@ void SYS_ParameterDisplay(unsigned char mode)
 			SYS_cursor_ON_Mode(CURSOR_MODE_6);
 		}
 	}
+	else if(mode == MODE_1d_3u_pu)
+	{
+		if(!Edit_flag)
+		{
+			CLCD_string(0xC0,(char*)_TEXT("     % 1d.%03u p.u  ",(int)Temporary/1000,(int)Temporary%1000));
+			CLCD_cursor_OFF();
+		}
+		else
+		{
+			CLCD_string(0xC0,(char*)_TEXT("     % 1d.%03u p.u  ",(int)edit_Temp/1000,(int)edit_Temp%1000));
+			SYS_cursor_ON_Mode(CURSOR_MODE_7);
+		}
+	}
 }
 
 
@@ -2194,7 +2211,7 @@ void SYS_ParameterEdt(unsigned int addr,unsigned int e_temp, unsigned char mode)
 {
 	char value[5];
 	
-	if(mode==CURSOR_MODE_1)//unsigned int
+	if(mode==EDIT_MODE_1)//unsigned int
 	{
 			if(KeyState.KeyValue == ENTER)
 			{
@@ -2263,7 +2280,7 @@ void SYS_ParameterEdt(unsigned int addr,unsigned int e_temp, unsigned char mode)
 				}
 			}
 	}
-	else if(mode==CURSOR_MODE_2)//selset
+	else if(mode==EDIT_MODE_2)//selset
 	{
 			if(KeyState.KeyValue == ENTER)
 			{
@@ -2294,7 +2311,7 @@ void SYS_ParameterEdt(unsigned int addr,unsigned int e_temp, unsigned char mode)
 				RefreshFlag=1;
 			}
 	}
-	else if(mode==CURSOR_MODE_3)//selset
+	else if(mode==EDIT_MODE_3)//selset
 	{
 			if(KeyState.KeyValue == ENTER)
 			{
@@ -2325,7 +2342,7 @@ void SYS_ParameterEdt(unsigned int addr,unsigned int e_temp, unsigned char mode)
 				RefreshFlag=1;
 			}
 	}
-	else if(mode==CURSOR_MODE_4)//int
+	else if(mode==EDIT_MODE_4)//int
 	{
 		if(posInpage==1)
 		{
@@ -2625,54 +2642,54 @@ void SYS_ParameterEdt(unsigned int addr,unsigned int e_temp, unsigned char mode)
 
 void SYS_cursor_ON_Mode(unsigned char mode)
 {
-	if(mode==0)//password
+	if(mode==CURSOR_MODE_0)//password
 	{
 		if(pass_pos==0)			CLCD_cursor_ON(0xC0,9);
 		else if(pass_pos==1)		CLCD_cursor_ON(0xC0,10);
 		else if(pass_pos==2)		CLCD_cursor_ON(0xC0,11);
 		else if(pass_pos==3)		CLCD_cursor_ON(0xC0,12);
 	}
-	else if(mode==1)// _ _ _ _
+	else if(mode==CURSOR_MODE_1)// _ _ _ _
 	{
 		CLCD_cursor_ON(0xC0, 11 - posInpage);
 	}
-	else if(mode==2)// x _ . _ _
+	else if(mode==CURSOR_MODE_2)// x _ . _ _
 	{
 		if(3<posInpage)posInpage=3;
 		if(posInpage <= 2)CLCD_cursor_ON(0xC0, 11 - posInpage);
 		else CLCD_cursor_ON(0xC0, 10 - posInpage);
 	}
-	else if(mode==3)// x x _ . _
+	else if(mode==CURSOR_MODE_3)// x x _ . _
 	{
 		if(2<posInpage)posInpage=2;
 		if(posInpage <= 1)CLCD_cursor_ON(0xC0, 11 - posInpage);
 		else CLCD_cursor_ON(0xC0, 10 - posInpage);
 	}
-	else if(mode==4)//select
+	else if(mode==CURSOR_MODE_4)//select
 	{
 		CLCD_cursor_ON(0xC0, 1);
 	}
-	else if(mode==5)// x _ _ . _
+	else if(mode==CURSOR_MODE_5)// x _ _ . _
 	{
 		if(3<posInpage)posInpage=3;
 		if(posInpage <= 1)CLCD_cursor_ON(0xC0, 11 - posInpage);
 		else CLCD_cursor_ON(0xC0, 10 - posInpage);
 	}
-	else if(mode==6)// _ _ _ . _
+	else if(mode==CURSOR_MODE_6)// _ _ _ . _
 	{
 		if(4<posInpage)posInpage=4;
 		if(posInpage <= 1)CLCD_cursor_ON(0xC0, 11 - posInpage);
 		else CLCD_cursor_ON(0xC0, 10 - posInpage);
 	}
-	else if(mode==7)// _ . _ _ _
+	else if(mode==CURSOR_MODE_7)// _ . _ _ _
 	{
 		if(4<posInpage)posInpage=4;
 		if(posInpage <= 3)CLCD_cursor_ON(0xC0, 11 - posInpage);
 		else CLCD_cursor_ON(0xC0, 10 - posInpage);
 	}
-	else if(mode==8)// _ . _ _ _ _
+	else if(mode==CURSOR_MODE_8)// _ . _ _ _ _
 	{
-		if(5<posInpage)posInpage=5;
+		if(5<posInpage)posInpage=4;
 		if(posInpage <= 4)CLCD_cursor_ON(0xC0, 11 - posInpage);
 		else CLCD_cursor_ON(0xC0, 10 - posInpage);
 	}
@@ -2734,8 +2751,8 @@ void SYS_1(void)
 void SYS_2(void)
 {
 	if(KeyState.KeyValue == DN)MenuDisplay = SYS_1;
-	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_3;
-	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_2_00;
+	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_4;
+	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_2_03;
 	else if(KeyState.KeyValue == 0xFE )MenuDisplay = SYS_0xFFFFFFFF;
 
 	if(RefreshFlag)
@@ -2759,7 +2776,7 @@ void SYS_3(void)
 }
 void SYS_4(void)
 {
-	if(KeyState.KeyValue == DN)MenuDisplay = SYS_3;
+	if(KeyState.KeyValue == DN)MenuDisplay = SYS_2;
 	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_5;
 	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_4_00;
 	else if(KeyState.KeyValue == 0xFE )MenuDisplay = SYS_0xFFFFFFFF;
@@ -2846,7 +2863,7 @@ void SYS_0_1(void)
 	}
 	else
 	{
-		SYS_ParameterEdt(2301, edit_Temp, CURSOR_MODE_4);
+		SYS_ParameterEdt(2301, edit_Temp, EDIT_MODE_4);
 	}
 
 	if(RefreshFlag)
@@ -2856,9 +2873,9 @@ void SYS_0_1(void)
 		SYS_ParameterDisplay(MODE_5d_V);
 	}
 }
-
-
 #if 0
+
+
 void SYS_0_1(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_0;
@@ -2890,7 +2907,7 @@ void SYS_0_1(void)
 	}
 
 }
-
+#endif
 void SYS_0_2(void)
 {
 	if(!Edit_flag)
@@ -2907,7 +2924,7 @@ void SYS_0_2(void)
 	}
 	else
 	{
-		SYS_ParameterEdt(Speed_ref, edit_Temp, CURSOR_MODE_4);
+		SYS_ParameterEdt(Speed_ref, edit_Temp, EDIT_MODE_4);
 	}
 
 	if(RefreshFlag)
@@ -2933,7 +2950,7 @@ void SYS_0_3(void)
 	}
 	else
 	{
-		SYS_ParameterEdt(Freq_ref, edit_Temp, CURSOR_MODE_4);
+		SYS_ParameterEdt(Freq_ref, edit_Temp, EDIT_MODE_4);
 	}
 
 	if(RefreshFlag)
@@ -2959,7 +2976,7 @@ void SYS_0_4(void)
 	}
 	else
 	{
-		SYS_ParameterEdt(Torque_ref, edit_Temp, CURSOR_MODE_4);
+		SYS_ParameterEdt(Torque_ref, edit_Temp, EDIT_MODE_4);
 	}
 
 	if(RefreshFlag)
@@ -2986,7 +3003,7 @@ void SYS_0_5(void)
 	}
 	else
 	{
-		SYS_ParameterEdt(PID_ref, edit_Temp, CURSOR_MODE_4);
+		SYS_ParameterEdt(PID_ref, edit_Temp, EDIT_MODE_4);
 	}
 
 	if(RefreshFlag)
@@ -2997,7 +3014,6 @@ void SYS_0_5(void)
 	}
 }
 
-#endif
 
 void SYS_1_0(void)
 {
@@ -3502,7 +3518,7 @@ void SYS_1_2_07(void)
 	if(RefreshFlag){
 		Temporary = ReadDataMem(2357);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_1_2_XX_BISA[7][0]));
-		CLCD_string(0xC0,(char*)_TEXT("   Ver %d.%01d%c    ",(int)DATA_Registers[201]/100,(int)DATA_Registers[201]%100,(int)DATA_Registers[202] ));
+		CLCD_string(0xC0,(char*)_TEXT("   Ver %01d.%02d% 1c    ",(int)DATA_Registers[201]/100,(int)DATA_Registers[201]%100,(int)DATA_Registers[202] ));
 		//SYS_ParameterDisplay(MODE_5d);
 	}
 }
@@ -3552,8 +3568,8 @@ void SYS_2_02(void)
 void SYS_2_03(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_2;
-	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_02;
-	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_04;
+	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_29;
+	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_08;
 	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_2_03_00;
 	
 	if(RefreshFlag)
@@ -3617,8 +3633,8 @@ void SYS_2_07(void)
 void SYS_2_08(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_2;
-	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_07;
-	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_09;
+	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_03;
+	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_11;
 	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_2_08_00;
 	
 	if(RefreshFlag)
@@ -3656,7 +3672,7 @@ void SYS_2_10(void)
 void SYS_2_11(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_2;
-	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_10;
+	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_08;
 	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_12;
 	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_2_11_00;
 	
@@ -3670,7 +3686,7 @@ void SYS_2_12(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_2;
 	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_11;
-	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_13;
+	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_23;
 	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_2_12_00;
 	
 	if(RefreshFlag)
@@ -3812,7 +3828,7 @@ void SYS_2_22(void)
 void SYS_2_23(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_2;
-	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_22;
+	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_12;
 	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_29;
 	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_2_23_00;
 	
@@ -3826,7 +3842,7 @@ void SYS_2_29(void)
 {
 	if(KeyState.KeyValue == ESC)MenuDisplay = SYS_2;
 	else if(KeyState.KeyValue == DN)MenuDisplay = SYS_2_23;
-	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_00;
+	else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_03;
 	else if(KeyState.KeyValue == ENTER)MenuDisplay = SYS_2_29_00;
 	
 	if(RefreshFlag)
@@ -3849,7 +3865,7 @@ void SYS_2_00_00(void)
 	}
 	else
 	{
-		SYS_ParameterEdt(200,  edit_Temp, CURSOR_MODE_1);
+		SYS_ParameterEdt(200,  edit_Temp, EDIT_MODE_4);
 	}
 
 	if(RefreshFlag)
@@ -3870,7 +3886,7 @@ void SYS_2_00_01(void)
 		else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_00_02;
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
-	else		SYS_ParameterEdt(201,  edit_Temp, CURSOR_MODE_2);
+	else		SYS_ParameterEdt(201,  edit_Temp, EDIT_MODE_2);
 
 	if(RefreshFlag)
 	{
@@ -3890,7 +3906,7 @@ void SYS_2_00_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(202,  edit_Temp, CURSOR_MODE_2);
+	SYS_ParameterEdt(202,  edit_Temp, EDIT_MODE_2);
 
 	if(RefreshFlag)
 	{
@@ -3909,7 +3925,7 @@ void SYS_2_00_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(203,  edit_Temp, CURSOR_MODE_2);
+	SYS_ParameterEdt(203,  edit_Temp, EDIT_MODE_2);
 
 	if(RefreshFlag)
 	{
@@ -3928,7 +3944,7 @@ void SYS_2_00_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(204,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(204,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -3947,7 +3963,7 @@ void SYS_2_00_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(205,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(205,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -3966,7 +3982,7 @@ void SYS_2_00_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(206,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(206,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -3985,7 +4001,7 @@ void SYS_2_00_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(207,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(207,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4004,7 +4020,7 @@ void SYS_2_00_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(208,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(208,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4023,7 +4039,7 @@ void SYS_2_00_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(209,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(209,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4042,7 +4058,7 @@ void SYS_2_00_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(210,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(210,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4061,7 +4077,7 @@ void SYS_2_00_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(211,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(211,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4080,7 +4096,7 @@ void SYS_2_00_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(212,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(212,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4099,7 +4115,7 @@ void SYS_2_00_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(213,  edit_Temp, CURSOR_MODE_2);
+	SYS_ParameterEdt(213,  edit_Temp, EDIT_MODE_2);
 
 	if(RefreshFlag)
 	{
@@ -4118,7 +4134,7 @@ void SYS_2_00_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(214,  edit_Temp, CURSOR_MODE_2);
+	SYS_ParameterEdt(214,  edit_Temp, EDIT_MODE_2);
 
 	if(RefreshFlag)
 	{
@@ -4137,7 +4153,7 @@ void SYS_2_00_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(215,  edit_Temp, CURSOR_MODE_2);
+	SYS_ParameterEdt(215,  edit_Temp, EDIT_MODE_2);
 
 	if(RefreshFlag)
 	{
@@ -4157,7 +4173,7 @@ void SYS_2_01_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(240,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(240,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4176,7 +4192,7 @@ void SYS_2_01_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(241,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(241,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4196,7 +4212,7 @@ void SYS_2_01_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(242,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(242,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4215,7 +4231,7 @@ void SYS_2_01_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(243,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(243,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4234,7 +4250,7 @@ void SYS_2_01_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(244,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(244,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4253,7 +4269,7 @@ void SYS_2_01_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(245,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(245,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4272,7 +4288,7 @@ void SYS_2_01_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(246,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(246,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4291,7 +4307,7 @@ void SYS_2_01_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(247,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(247,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4310,7 +4326,7 @@ void SYS_2_01_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(248,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(248,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4329,7 +4345,7 @@ void SYS_2_01_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(249,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(249,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4352,7 +4368,7 @@ void SYS_2_02_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(260,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(260,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4371,7 +4387,7 @@ void SYS_2_02_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(261,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(261,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4390,7 +4406,7 @@ void SYS_2_02_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(262,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(262,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4409,7 +4425,7 @@ void SYS_2_02_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(263,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(263,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4428,7 +4444,7 @@ void SYS_2_02_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(264,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(264,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4447,7 +4463,7 @@ void SYS_2_02_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(265,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(265,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4466,7 +4482,7 @@ void SYS_2_02_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(266,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(266,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4485,7 +4501,7 @@ void SYS_2_02_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(267,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(267,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4504,7 +4520,7 @@ void SYS_2_02_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(268,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(268,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4523,7 +4539,7 @@ void SYS_2_02_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(269,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(269,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4546,7 +4562,7 @@ void SYS_2_03_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(280,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(280,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4565,7 +4581,7 @@ void SYS_2_03_01(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(281,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(281,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4584,7 +4600,7 @@ void SYS_2_03_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(282,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(282,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4603,7 +4619,7 @@ void SYS_2_03_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(283,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(283,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4622,7 +4638,7 @@ void SYS_2_03_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(284,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(284,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4641,7 +4657,7 @@ void SYS_2_03_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(285,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(285,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4660,7 +4676,7 @@ void SYS_2_03_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(286,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(286,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4679,7 +4695,7 @@ void SYS_2_03_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(287,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(287,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4698,7 +4714,7 @@ void SYS_2_03_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(288,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(288,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4717,7 +4733,7 @@ void SYS_2_03_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(289,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(289,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4737,7 +4753,7 @@ void SYS_2_03_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(290,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(290,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4756,7 +4772,7 @@ void SYS_2_03_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(291,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(291,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4775,7 +4791,7 @@ void SYS_2_03_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(292,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(292,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4794,7 +4810,7 @@ void SYS_2_03_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(293,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(293,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4813,7 +4829,7 @@ void SYS_2_03_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(294,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(294,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4832,7 +4848,7 @@ void SYS_2_03_15(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(295,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(295,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4851,7 +4867,7 @@ void SYS_2_03_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(296,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(296,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4870,7 +4886,7 @@ void SYS_2_03_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(297,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(297,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4889,7 +4905,7 @@ void SYS_2_03_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(298,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(298,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4908,7 +4924,7 @@ void SYS_2_03_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(299,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(299,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4929,7 +4945,7 @@ void SYS_2_03_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(300,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(300,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4948,7 +4964,7 @@ void SYS_2_03_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(301,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(301,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4967,7 +4983,7 @@ void SYS_2_03_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(302,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(302,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -4986,7 +5002,7 @@ void SYS_2_03_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(303,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(303,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5005,7 +5021,7 @@ void SYS_2_03_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(304,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(304,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5024,7 +5040,7 @@ void SYS_2_03_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(305,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(305,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5043,7 +5059,7 @@ void SYS_2_03_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(306,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(306,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5062,7 +5078,7 @@ void SYS_2_03_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(307,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(307,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5081,7 +5097,7 @@ void SYS_2_03_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(308,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(308,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5100,7 +5116,7 @@ void SYS_2_03_29(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(309,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(309,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5121,7 +5137,7 @@ void SYS_2_03_30(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(310,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(310,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5140,7 +5156,7 @@ void SYS_2_03_31(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(311,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(311,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5159,7 +5175,7 @@ void SYS_2_03_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(312,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(312,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5178,7 +5194,7 @@ void SYS_2_03_33(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(313,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(313,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5197,7 +5213,7 @@ void SYS_2_03_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(314,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(314,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5216,7 +5232,7 @@ void SYS_2_03_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(315,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(315,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5235,7 +5251,7 @@ void SYS_2_03_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(316,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(316,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5254,7 +5270,7 @@ void SYS_2_03_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(317,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(317,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5273,7 +5289,7 @@ void SYS_2_03_38(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(318,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(318,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5292,7 +5308,7 @@ void SYS_2_03_39(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(319,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(319,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5311,7 +5327,7 @@ void SYS_2_03_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(320,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(320,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5330,7 +5346,7 @@ void SYS_2_03_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(321,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(321,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5349,7 +5365,7 @@ void SYS_2_03_42(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(322,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(322,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5368,7 +5384,7 @@ void SYS_2_03_43(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(323,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(323,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5387,7 +5403,7 @@ void SYS_2_03_44(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(324,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(324,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5406,7 +5422,7 @@ void SYS_2_03_45(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(325,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(325,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5425,7 +5441,7 @@ void SYS_2_03_46(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(326,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(326,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5444,7 +5460,7 @@ void SYS_2_03_47(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(327,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(327,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5463,7 +5479,7 @@ void SYS_2_03_48(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(328,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(328,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5482,7 +5498,7 @@ void SYS_2_03_49(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(329,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(329,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5501,7 +5517,7 @@ void SYS_2_03_50(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(330,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(330,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5520,7 +5536,7 @@ void SYS_2_03_51(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(331,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(331,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5539,7 +5555,7 @@ void SYS_2_03_52(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(332,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(332,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5561,7 +5577,7 @@ void SYS_2_04_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(390,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(390,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5580,7 +5596,7 @@ void SYS_2_04_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(391,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(391,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5599,7 +5615,7 @@ void SYS_2_04_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(392,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(392,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5618,7 +5634,7 @@ void SYS_2_04_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(393,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(393,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5637,7 +5653,7 @@ void SYS_2_04_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(394,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(394,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5656,7 +5672,7 @@ void SYS_2_04_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(395,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(395,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5675,7 +5691,7 @@ void SYS_2_04_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(396,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(396,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5694,7 +5710,7 @@ void SYS_2_04_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(397,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(397,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5713,7 +5729,7 @@ void SYS_2_04_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(398,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(398,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5732,7 +5748,7 @@ void SYS_2_04_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(399, edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(399, edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5752,7 +5768,7 @@ void SYS_2_04_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(400,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(400,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5771,7 +5787,7 @@ void SYS_2_04_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(401,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(401,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5790,7 +5806,7 @@ void SYS_2_04_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(402,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(402,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5809,7 +5825,7 @@ void SYS_2_04_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(403,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(403,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5828,7 +5844,7 @@ void SYS_2_04_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(404,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(404,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5847,7 +5863,7 @@ void SYS_2_04_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(405,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(405,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5866,7 +5882,7 @@ void SYS_2_04_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(406,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(406,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5885,7 +5901,7 @@ void SYS_2_04_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(407,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(407,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5904,7 +5920,7 @@ void SYS_2_04_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(408,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(408,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5923,7 +5939,7 @@ void SYS_2_04_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(409,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(409,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5944,7 +5960,7 @@ void SYS_2_04_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(410,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(410,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5963,7 +5979,7 @@ void SYS_2_04_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(411,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(411,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -5982,7 +5998,7 @@ void SYS_2_04_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(412,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(412,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6001,7 +6017,7 @@ void SYS_2_04_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(413,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(413,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6020,7 +6036,7 @@ void SYS_2_04_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(414,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(414,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6039,7 +6055,7 @@ void SYS_2_04_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(415,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(415,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6058,7 +6074,7 @@ void SYS_2_04_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(416,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(416,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6077,7 +6093,7 @@ void SYS_2_04_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(417,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(417,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6096,7 +6112,7 @@ void SYS_2_04_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(418,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(418,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6115,7 +6131,7 @@ void SYS_2_04_29(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(419,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(419,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6136,7 +6152,7 @@ void SYS_2_04_30(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(420,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(420,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6155,7 +6171,7 @@ void SYS_2_04_31(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(421,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(421,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6174,7 +6190,7 @@ void SYS_2_04_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(422,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(422,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6193,7 +6209,7 @@ void SYS_2_04_33(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(423,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(423,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6212,7 +6228,7 @@ void SYS_2_04_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(424,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(424,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6231,7 +6247,7 @@ void SYS_2_04_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(425,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(425,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6250,7 +6266,7 @@ void SYS_2_04_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(426,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(426,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6269,7 +6285,7 @@ void SYS_2_04_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(427,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(427,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6288,7 +6304,7 @@ void SYS_2_04_38(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(428,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(428,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6307,7 +6323,7 @@ void SYS_2_04_39(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(429,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(429,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6326,7 +6342,7 @@ void SYS_2_04_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(430,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(430,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6345,7 +6361,7 @@ void SYS_2_04_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(431,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(431,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6364,7 +6380,7 @@ void SYS_2_04_42(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(432,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(432,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6383,7 +6399,7 @@ void SYS_2_04_43(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(433,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(433,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6402,7 +6418,7 @@ void SYS_2_04_44(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(434,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(434,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6421,7 +6437,7 @@ void SYS_2_04_45(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(435,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(435,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6440,7 +6456,7 @@ void SYS_2_04_46(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(436,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(436,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6459,7 +6475,7 @@ void SYS_2_04_47(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(437,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(437,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6478,7 +6494,7 @@ void SYS_2_04_48(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(438,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(438,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6497,7 +6513,7 @@ void SYS_2_04_49(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(439,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(439,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6516,7 +6532,7 @@ void SYS_2_04_50(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(440,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(440,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6535,7 +6551,7 @@ void SYS_2_04_51(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(441,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(441,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6556,7 +6572,7 @@ void SYS_2_04_52(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(442,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(442,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6578,7 +6594,7 @@ void SYS_2_05_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(500,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(500,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6597,7 +6613,7 @@ void SYS_2_05_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(501,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(501,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6616,7 +6632,7 @@ void SYS_2_05_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(502,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(502,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6635,7 +6651,7 @@ void SYS_2_05_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(503,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(503,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6654,7 +6670,7 @@ void SYS_2_05_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(504,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(504,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6673,7 +6689,7 @@ void SYS_2_05_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(505,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(505,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6692,7 +6708,7 @@ void SYS_2_05_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(506,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(506,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6711,7 +6727,7 @@ void SYS_2_05_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(507,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(507,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6730,7 +6746,7 @@ void SYS_2_05_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(508,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(508,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6749,7 +6765,7 @@ void SYS_2_05_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(509,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(509,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6769,7 +6785,7 @@ void SYS_2_05_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(510,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(510,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6788,7 +6804,7 @@ void SYS_2_05_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(511,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(511,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6807,7 +6823,7 @@ void SYS_2_05_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(512,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(512,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6826,7 +6842,7 @@ void SYS_2_05_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(513,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(513,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6845,7 +6861,7 @@ void SYS_2_05_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(514,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(514,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6864,7 +6880,7 @@ void SYS_2_05_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(515,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(515,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6883,7 +6899,7 @@ void SYS_2_05_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(516,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(516,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6902,7 +6918,7 @@ void SYS_2_05_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(517,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(517,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6921,7 +6937,7 @@ void SYS_2_05_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(518,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(518,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6940,7 +6956,7 @@ void SYS_2_05_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(519,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(519,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6961,7 +6977,7 @@ void SYS_2_05_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(520,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(520,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6980,7 +6996,7 @@ void SYS_2_05_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(521,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(521,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -6999,7 +7015,7 @@ void SYS_2_05_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(522,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(522,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7018,7 +7034,7 @@ void SYS_2_05_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(523,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(523,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7037,7 +7053,7 @@ void SYS_2_05_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(524,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(524,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7056,7 +7072,7 @@ void SYS_2_05_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(525,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(525,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7075,7 +7091,7 @@ void SYS_2_05_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(526,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(526,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7094,7 +7110,7 @@ void SYS_2_05_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(527,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(527,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7113,7 +7129,7 @@ void SYS_2_05_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(528,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(528,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7132,7 +7148,7 @@ void SYS_2_05_29(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(529,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(529,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7153,7 +7169,7 @@ void SYS_2_05_30(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(530,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(530,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7172,7 +7188,7 @@ void SYS_2_05_31(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(531,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(531,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7191,7 +7207,7 @@ void SYS_2_05_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(532,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(532,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7210,7 +7226,7 @@ void SYS_2_05_33(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(533,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(533,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7229,7 +7245,7 @@ void SYS_2_05_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(534,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(534,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7248,7 +7264,7 @@ void SYS_2_05_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(535,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(535,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7267,7 +7283,7 @@ void SYS_2_05_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(536,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(536,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7286,7 +7302,7 @@ void SYS_2_05_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(537,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(537,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7305,7 +7321,7 @@ void SYS_2_05_38(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(538,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(538,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7324,7 +7340,7 @@ void SYS_2_05_39(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(539,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(539,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7343,7 +7359,7 @@ void SYS_2_05_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(540,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(540,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7362,7 +7378,7 @@ void SYS_2_05_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(541,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(541,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7381,7 +7397,7 @@ void SYS_2_05_42(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(542,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(542,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7400,7 +7416,7 @@ void SYS_2_05_43(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(543,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(543,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7419,7 +7435,7 @@ void SYS_2_05_44(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(544,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(544,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7442,7 +7458,7 @@ void SYS_2_06_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(600,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(600,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7461,7 +7477,7 @@ void SYS_2_06_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(601,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(601,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7480,7 +7496,7 @@ void SYS_2_06_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(602,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(602,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7499,7 +7515,7 @@ void SYS_2_06_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(603,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(603,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7518,7 +7534,7 @@ void SYS_2_06_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(604,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(604,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7537,7 +7553,7 @@ void SYS_2_06_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(605,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(605,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7556,7 +7572,7 @@ void SYS_2_06_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(606,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(606,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7575,7 +7591,7 @@ void SYS_2_06_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(607,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(607,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7594,7 +7610,7 @@ void SYS_2_06_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(608,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(608,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7613,7 +7629,7 @@ void SYS_2_06_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(609,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(609,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7633,7 +7649,7 @@ void SYS_2_06_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(610,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(610,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7652,7 +7668,7 @@ void SYS_2_06_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(611,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(611,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7671,7 +7687,7 @@ void SYS_2_06_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(612,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(612,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7690,7 +7706,7 @@ void SYS_2_06_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(613,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(613,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7709,7 +7725,7 @@ void SYS_2_06_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(614,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(614,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7728,7 +7744,7 @@ void SYS_2_06_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(615,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(615,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7747,7 +7763,7 @@ void SYS_2_06_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(616,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(616,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7766,7 +7782,7 @@ void SYS_2_06_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(617,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(617,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7785,7 +7801,7 @@ void SYS_2_06_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(618,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(618,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7804,7 +7820,7 @@ void SYS_2_06_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(619,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(619,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7825,7 +7841,7 @@ void SYS_2_06_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(620,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(620,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7844,7 +7860,7 @@ void SYS_2_06_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(621,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(621,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7863,7 +7879,7 @@ void SYS_2_06_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(622,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(622,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7882,7 +7898,7 @@ void SYS_2_06_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(623,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(623,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7901,7 +7917,7 @@ void SYS_2_06_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(624,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(624,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7920,7 +7936,7 @@ void SYS_2_06_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(625,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(625,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7939,7 +7955,7 @@ void SYS_2_06_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(626,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(626,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7958,7 +7974,7 @@ void SYS_2_06_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(627,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(627,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7977,7 +7993,7 @@ void SYS_2_06_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(628,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(628,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -7996,7 +8012,7 @@ void SYS_2_06_29(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(629,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(629,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8017,7 +8033,7 @@ void SYS_2_06_30(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(630,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(630,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8036,7 +8052,7 @@ void SYS_2_06_31(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(631,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(631,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8055,7 +8071,7 @@ void SYS_2_06_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(632,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(632,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8074,7 +8090,7 @@ void SYS_2_06_33(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(633,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(633,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8093,7 +8109,7 @@ void SYS_2_06_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(634,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(634,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8112,7 +8128,7 @@ void SYS_2_06_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(635,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(635,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8131,7 +8147,7 @@ void SYS_2_06_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(636,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(636,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8150,7 +8166,7 @@ void SYS_2_06_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(637,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(637,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8169,7 +8185,7 @@ void SYS_2_06_38(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(638,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(638,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8188,7 +8204,7 @@ void SYS_2_06_39(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(639,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(639,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8207,7 +8223,7 @@ void SYS_2_06_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(640,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(640,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8227,7 +8243,7 @@ void SYS_2_06_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(641,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(641,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8246,7 +8262,7 @@ void SYS_2_06_42(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(642,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(642,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8265,7 +8281,7 @@ void SYS_2_06_43(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(643,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(643,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8284,7 +8300,7 @@ void SYS_2_06_44(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(644,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(644,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8303,7 +8319,7 @@ void SYS_2_06_45(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(645,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(645,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8322,7 +8338,7 @@ void SYS_2_06_46(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(646,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(646,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8341,7 +8357,7 @@ void SYS_2_06_47(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(647,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(647,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8360,7 +8376,7 @@ void SYS_2_06_48(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(648,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(648,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8379,7 +8395,7 @@ void SYS_2_06_49(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(649,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(649,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8399,7 +8415,7 @@ void SYS_2_06_50(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(650,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(650,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8418,7 +8434,7 @@ void SYS_2_06_51(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(651,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(651,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8437,7 +8453,7 @@ void SYS_2_06_52(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(652,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(652,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8456,7 +8472,7 @@ void SYS_2_06_53(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(653,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(653,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8475,7 +8491,7 @@ void SYS_2_06_54(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(654,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(654,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8494,7 +8510,7 @@ void SYS_2_06_55(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(655,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(655,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8513,7 +8529,7 @@ void SYS_2_06_56(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(656,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(656,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8532,7 +8548,7 @@ void SYS_2_06_57(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(657,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(657,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8551,7 +8567,7 @@ void SYS_2_06_58(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(658,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(658,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8570,7 +8586,7 @@ void SYS_2_06_59(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(659,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(659,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8591,7 +8607,7 @@ void SYS_2_06_60(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(660,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(660,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8610,7 +8626,7 @@ void SYS_2_06_61(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(661,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(661,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8629,7 +8645,7 @@ void SYS_2_06_62(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(662,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(662,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8648,7 +8664,7 @@ void SYS_2_06_63(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(663,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(663,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8667,7 +8683,7 @@ void SYS_2_06_64(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(664,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(664,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8686,7 +8702,7 @@ void SYS_2_06_65(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(665,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(665,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8705,7 +8721,7 @@ void SYS_2_06_66(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(666,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(666,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8724,7 +8740,7 @@ void SYS_2_06_67(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(667,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(667,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8743,7 +8759,7 @@ void SYS_2_06_68(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(668,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(668,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8762,7 +8778,7 @@ void SYS_2_06_69(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(669,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(669,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8783,7 +8799,7 @@ void SYS_2_06_70(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(670,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(670,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8807,7 +8823,7 @@ void SYS_2_07_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(750,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(750,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8826,7 +8842,7 @@ void SYS_2_07_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(751,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(751,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8845,7 +8861,7 @@ void SYS_2_07_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(752,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(752,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8864,7 +8880,7 @@ void SYS_2_07_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(753,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(753,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8883,7 +8899,7 @@ void SYS_2_07_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(754,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(754,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8902,7 +8918,7 @@ void SYS_2_07_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(755,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(755,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8921,7 +8937,7 @@ void SYS_2_07_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(756,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(756,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8940,7 +8956,7 @@ void SYS_2_07_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(757,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(757,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8959,7 +8975,7 @@ void SYS_2_07_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(758,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(758,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8978,7 +8994,7 @@ void SYS_2_07_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(759,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(759,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -8998,7 +9014,7 @@ void SYS_2_07_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(760,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(760,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9017,7 +9033,7 @@ void SYS_2_07_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(761,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(761,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9036,7 +9052,7 @@ void SYS_2_07_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(762,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(762,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9055,7 +9071,7 @@ void SYS_2_07_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(763,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(763,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9074,7 +9090,7 @@ void SYS_2_07_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(764,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(764,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9093,7 +9109,7 @@ void SYS_2_07_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(765,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(765,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9112,7 +9128,7 @@ void SYS_2_07_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(766,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(766,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9131,7 +9147,7 @@ void SYS_2_07_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(767,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(767,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9150,7 +9166,7 @@ void SYS_2_07_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(768,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(768,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9169,7 +9185,7 @@ void SYS_2_07_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(769,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(769,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9190,7 +9206,7 @@ void SYS_2_07_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(770,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(770,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9209,7 +9225,7 @@ void SYS_2_07_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(771,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(771,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9228,7 +9244,7 @@ void SYS_2_07_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(772,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(772,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9247,7 +9263,7 @@ void SYS_2_07_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(773,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(773,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9266,7 +9282,7 @@ void SYS_2_07_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(774,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(774,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9285,7 +9301,7 @@ void SYS_2_07_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(775,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(775,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9304,7 +9320,7 @@ void SYS_2_07_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(776,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(776,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9323,7 +9339,7 @@ void SYS_2_07_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(777,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(777,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9342,7 +9358,7 @@ void SYS_2_07_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(778,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(778,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9363,7 +9379,7 @@ void SYS_2_08_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(810,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(810,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9382,7 +9398,7 @@ void SYS_2_08_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(811,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(811,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9401,7 +9417,7 @@ void SYS_2_08_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(812,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(812,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9420,7 +9436,7 @@ void SYS_2_08_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(813,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(813,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9439,7 +9455,7 @@ void SYS_2_08_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(814,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(814,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9458,7 +9474,7 @@ void SYS_2_08_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(815,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(815,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9477,7 +9493,7 @@ void SYS_2_08_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(816,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(816,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9496,7 +9512,7 @@ void SYS_2_08_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(817,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(817,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9515,7 +9531,7 @@ void SYS_2_08_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(818,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(818,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9534,7 +9550,7 @@ void SYS_2_08_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(819,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(819,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9554,7 +9570,7 @@ void SYS_2_08_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(820,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(820,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9573,7 +9589,7 @@ void SYS_2_08_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(821,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(821,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9592,7 +9608,7 @@ void SYS_2_08_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(822,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(822,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9611,7 +9627,7 @@ void SYS_2_08_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(823,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(823,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9630,7 +9646,7 @@ void SYS_2_08_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(824,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(824,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9649,7 +9665,7 @@ void SYS_2_08_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(825,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(825,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9668,7 +9684,7 @@ void SYS_2_08_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(826,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(826,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9687,7 +9703,7 @@ void SYS_2_08_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(827,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(827,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9706,7 +9722,7 @@ void SYS_2_08_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(828,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(828,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9725,7 +9741,7 @@ void SYS_2_08_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(829,  edit_Temp, CURSOR_MODE_3);
+	SYS_ParameterEdt(829,  edit_Temp, EDIT_MODE_3);
 
 	if(RefreshFlag)
 	{
@@ -9750,7 +9766,7 @@ void SYS_2_09_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(860,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(860,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9769,7 +9785,7 @@ void SYS_2_09_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(861,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(861,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9788,7 +9804,7 @@ void SYS_2_09_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(862,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(862,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9807,7 +9823,7 @@ void SYS_2_09_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(863,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(863,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9826,7 +9842,7 @@ void SYS_2_09_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(864,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(864,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9845,7 +9861,7 @@ void SYS_2_09_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(865,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(865,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9864,7 +9880,7 @@ void SYS_2_09_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(866,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(866,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9883,7 +9899,7 @@ void SYS_2_09_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(867,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(867,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9902,7 +9918,7 @@ void SYS_2_09_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(868,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(868,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9921,7 +9937,7 @@ void SYS_2_09_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(869,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(869,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9941,7 +9957,7 @@ void SYS_2_09_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(870,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(870,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9960,7 +9976,7 @@ void SYS_2_09_11(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(871,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(871,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9980,7 +9996,7 @@ void SYS_2_09_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(872,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(872,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -9999,7 +10015,7 @@ void SYS_2_09_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(873,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(873,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10018,7 +10034,7 @@ void SYS_2_09_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(874,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(874,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10037,7 +10053,7 @@ void SYS_2_09_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(875,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(875,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10056,7 +10072,7 @@ void SYS_2_09_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(876,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(876,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10080,7 +10096,7 @@ void SYS_2_10_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(900,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(900,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10101,7 +10117,7 @@ void SYS_2_10_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(901,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(901,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10122,7 +10138,7 @@ void SYS_2_10_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(902,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(902,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10143,7 +10159,7 @@ void SYS_2_10_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(903,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(903,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10164,7 +10180,7 @@ void SYS_2_10_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(904,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(904,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10185,7 +10201,7 @@ void SYS_2_10_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(905,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(905,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10206,7 +10222,7 @@ void SYS_2_10_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(906,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(906,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10227,7 +10243,7 @@ void SYS_2_10_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(907,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(907,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10248,7 +10264,7 @@ void SYS_2_10_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(908,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(908,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10269,7 +10285,7 @@ void SYS_2_10_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(909,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(909,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10291,7 +10307,7 @@ void SYS_2_10_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(910,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(910,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10312,7 +10328,7 @@ void SYS_2_10_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(911,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(911,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10333,7 +10349,7 @@ void SYS_2_10_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(912,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(912,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10354,7 +10370,7 @@ void SYS_2_10_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(913,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(913,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10375,7 +10391,7 @@ void SYS_2_10_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(914,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(914,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10396,7 +10412,7 @@ void SYS_2_10_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(915,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(915,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10417,7 +10433,7 @@ void SYS_2_10_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(916,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(916,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10441,7 +10457,7 @@ void SYS_2_11_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(940,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(940,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10460,7 +10476,7 @@ void SYS_2_11_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(941,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(941,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10479,13 +10495,13 @@ void SYS_2_11_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(942,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(942,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(942);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_11_XX[2][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_pu);
+		SYS_ParameterDisplay(MODE_1d_4u_pu);
 	}
 }
 void SYS_2_11_03(void)
@@ -10498,13 +10514,13 @@ void SYS_2_11_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(943,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(943,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(943);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_11_XX[3][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_pu);
+		SYS_ParameterDisplay(MODE_1d_4u_pu);
 	}
 }
 void SYS_2_11_04(void)
@@ -10517,13 +10533,13 @@ void SYS_2_11_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(944,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(944,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(944);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_11_XX[4][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_pu);
+		SYS_ParameterDisplay(MODE_1d_3u_pu);
 	}
 }
 void SYS_2_11_05(void)
@@ -10536,7 +10552,7 @@ void SYS_2_11_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(945,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(945,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10555,7 +10571,7 @@ void SYS_2_11_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(946,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(946,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10580,7 +10596,7 @@ void SYS_2_12_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(960,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(960,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10599,7 +10615,7 @@ void SYS_2_12_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(961,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(961,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10618,7 +10634,7 @@ void SYS_2_12_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(962,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(962,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10637,7 +10653,7 @@ void SYS_2_12_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(963,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(963,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10656,7 +10672,7 @@ void SYS_2_12_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(964,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(964,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10675,7 +10691,7 @@ void SYS_2_12_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(965,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(965,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10694,7 +10710,7 @@ void SYS_2_12_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(966,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(966,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10713,7 +10729,7 @@ void SYS_2_12_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(967,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(967,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10738,7 +10754,7 @@ void SYS_2_13_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(980,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(980,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10757,7 +10773,7 @@ void SYS_2_13_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(981,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(981,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10776,7 +10792,7 @@ void SYS_2_13_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(982,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(982,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10795,7 +10811,7 @@ void SYS_2_13_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(983,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(983,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10814,7 +10830,7 @@ void SYS_2_13_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(984,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(984,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10833,7 +10849,7 @@ void SYS_2_13_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(985,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(985,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10852,7 +10868,7 @@ void SYS_2_13_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(986,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(986,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10871,7 +10887,7 @@ void SYS_2_13_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(987,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(987,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10890,7 +10906,7 @@ void SYS_2_13_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(988,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(988,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10909,7 +10925,7 @@ void SYS_2_13_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(989,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(989,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10929,7 +10945,7 @@ void SYS_2_13_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(990,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(990,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10948,7 +10964,7 @@ void SYS_2_13_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(991,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(991,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10974,7 +10990,7 @@ void SYS_2_14_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1010, edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1010, edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -10993,7 +11009,7 @@ void SYS_2_14_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1011,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1011,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11012,7 +11028,7 @@ void SYS_2_14_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1012,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1012,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11031,7 +11047,7 @@ void SYS_2_14_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1013,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1013,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11050,7 +11066,7 @@ void SYS_2_14_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1014,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1014,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11069,7 +11085,7 @@ void SYS_2_14_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1015,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1015,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11088,7 +11104,7 @@ void SYS_2_14_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1016,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1016,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11107,7 +11123,7 @@ void SYS_2_14_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1017,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1017,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11126,7 +11142,7 @@ void SYS_2_14_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1018,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1018,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11151,7 +11167,7 @@ void SYS_2_15_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1030, edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1030, edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11170,7 +11186,7 @@ void SYS_2_15_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1031,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1031,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11189,7 +11205,7 @@ void SYS_2_15_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1032,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1032,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11208,7 +11224,7 @@ void SYS_2_15_03(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1033,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1033,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11227,7 +11243,7 @@ void SYS_2_15_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1034,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1034,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11246,7 +11262,7 @@ void SYS_2_15_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1035,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1035,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11265,7 +11281,7 @@ void SYS_2_15_06(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1036,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1036,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11284,7 +11300,7 @@ void SYS_2_15_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1037,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1037,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11303,7 +11319,7 @@ void SYS_2_15_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1038,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1038,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11322,7 +11338,7 @@ void SYS_2_15_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1039,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1039,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11342,7 +11358,7 @@ void SYS_2_15_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1040,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1040,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11361,7 +11377,7 @@ void SYS_2_15_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1041,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1041,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11380,7 +11396,7 @@ void SYS_2_15_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1042,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1042,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11399,7 +11415,7 @@ void SYS_2_15_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1043,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1043,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11418,7 +11434,7 @@ void SYS_2_15_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1044,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1044,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11437,7 +11453,7 @@ void SYS_2_15_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1045,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1045,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11456,7 +11472,7 @@ void SYS_2_15_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1046,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1046,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11475,7 +11491,7 @@ void SYS_2_15_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1047,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1047,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11494,7 +11510,7 @@ void SYS_2_15_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1048,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1048,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11513,7 +11529,7 @@ void SYS_2_15_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1049,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1049,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11534,7 +11550,7 @@ void SYS_2_15_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1050,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1050,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11553,7 +11569,7 @@ void SYS_2_15_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1051,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1051,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11572,7 +11588,7 @@ void SYS_2_15_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1052,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1052,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11591,7 +11607,7 @@ void SYS_2_15_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1053,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1053,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11610,7 +11626,7 @@ void SYS_2_15_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1054,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1054,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11629,7 +11645,7 @@ void SYS_2_15_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1055,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1055,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11648,7 +11664,7 @@ void SYS_2_15_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1056,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1056,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11667,7 +11683,7 @@ void SYS_2_15_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1057,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1057,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11686,7 +11702,7 @@ void SYS_2_15_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1058,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1058,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11711,7 +11727,7 @@ void SYS_2_16_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1090,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1090,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11730,7 +11746,7 @@ void SYS_2_16_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1091,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1091,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11749,7 +11765,7 @@ void SYS_2_16_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1092,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1092,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11768,7 +11784,7 @@ void SYS_2_16_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1093,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1093,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11787,7 +11803,7 @@ void SYS_2_16_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1094,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1094,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11805,7 +11821,7 @@ void SYS_2_16_05(void)
 		else if(KeyState.KeyValue == UP)MenuDisplay = SYS_2_16_06;
 	}
 	else
-	SYS_ParameterEdt(1095,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1095,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11824,7 +11840,7 @@ void SYS_2_16_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1096,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1096,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11843,7 +11859,7 @@ void SYS_2_16_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1097,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1097,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11862,7 +11878,7 @@ void SYS_2_16_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1098,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1098,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11881,7 +11897,7 @@ void SYS_2_16_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1099,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1099,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11901,7 +11917,7 @@ void SYS_2_16_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1100,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1100,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11920,7 +11936,7 @@ void SYS_2_16_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1101,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1101,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11939,7 +11955,7 @@ void SYS_2_16_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1102,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1102,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11958,7 +11974,7 @@ void SYS_2_16_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1103,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1103,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11977,7 +11993,7 @@ void SYS_2_16_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1104,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1104,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -11996,7 +12012,7 @@ void SYS_2_16_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1105,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1105,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12015,7 +12031,7 @@ void SYS_2_16_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1106,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1106,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12034,7 +12050,7 @@ void SYS_2_16_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1107,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1107,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12053,7 +12069,7 @@ void SYS_2_16_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1108,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1108,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12072,7 +12088,7 @@ void SYS_2_16_19(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1109,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1109,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12093,7 +12109,7 @@ void SYS_2_16_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1110,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1110,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12112,7 +12128,7 @@ void SYS_2_16_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1111,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1111,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12131,7 +12147,7 @@ void SYS_2_16_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1112,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1112,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12150,7 +12166,7 @@ void SYS_2_16_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1113,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1113,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12169,7 +12185,7 @@ void SYS_2_16_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1114,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1114,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12188,7 +12204,7 @@ void SYS_2_16_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1115,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1115,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12207,7 +12223,7 @@ void SYS_2_16_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1116,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1116,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12226,7 +12242,7 @@ void SYS_2_16_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1117,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1117,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12245,7 +12261,7 @@ void SYS_2_16_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1118,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1118,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12268,7 +12284,7 @@ void SYS_2_17_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1150,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1150,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12287,7 +12303,7 @@ void SYS_2_17_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1151,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1151,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12306,7 +12322,7 @@ void SYS_2_17_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1152,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1152,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12325,7 +12341,7 @@ void SYS_2_17_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1153,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1153,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12344,7 +12360,7 @@ void SYS_2_17_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1154,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1154,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12363,7 +12379,7 @@ void SYS_2_17_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1155,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1155,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12382,7 +12398,7 @@ void SYS_2_17_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1156,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1156,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12401,7 +12417,7 @@ void SYS_2_17_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1157,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1157,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12420,7 +12436,7 @@ void SYS_2_17_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1158,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1158,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12439,7 +12455,7 @@ void SYS_2_17_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1159,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1159,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12459,7 +12475,7 @@ void SYS_2_17_10(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1160,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1160,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12478,7 +12494,7 @@ void SYS_2_17_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1161,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1161,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12497,7 +12513,7 @@ void SYS_2_17_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1162,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1162,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12516,7 +12532,7 @@ void SYS_2_17_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1163,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1163,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12535,7 +12551,7 @@ void SYS_2_17_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1164,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1164,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12554,7 +12570,7 @@ void SYS_2_17_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1165,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1165,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12573,7 +12589,7 @@ void SYS_2_17_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1166,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1166,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12592,7 +12608,7 @@ void SYS_2_17_17(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1167,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1167,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12611,7 +12627,7 @@ void SYS_2_17_18(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1168,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1168,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12630,7 +12646,7 @@ void SYS_2_17_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1169,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1169,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12651,7 +12667,7 @@ void SYS_2_17_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1170,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1170,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12670,7 +12686,7 @@ void SYS_2_17_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1171,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1171,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12689,7 +12705,7 @@ void SYS_2_17_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1172,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1172,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12708,7 +12724,7 @@ void SYS_2_17_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1173,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1173,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12727,7 +12743,7 @@ void SYS_2_17_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1174,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1174,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12746,7 +12762,7 @@ void SYS_2_17_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1175,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1175,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12765,7 +12781,7 @@ void SYS_2_17_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1176,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1176,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12784,7 +12800,7 @@ void SYS_2_17_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1177,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1177,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12803,7 +12819,7 @@ void SYS_2_17_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1178,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1178,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12822,7 +12838,7 @@ void SYS_2_17_29(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1179,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1179,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12843,7 +12859,7 @@ void SYS_2_17_30(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1180,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1180,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12862,7 +12878,7 @@ void SYS_2_17_31(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1181,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1181,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12881,7 +12897,7 @@ void SYS_2_17_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1182,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1182,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12900,7 +12916,7 @@ void SYS_2_17_33(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1183,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1183,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12919,7 +12935,7 @@ void SYS_2_17_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1184,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1184,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12938,7 +12954,7 @@ void SYS_2_17_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1185,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1185,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12957,7 +12973,7 @@ void SYS_2_17_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1186,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1186,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12976,7 +12992,7 @@ void SYS_2_17_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1187,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1187,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -12995,7 +13011,7 @@ void SYS_2_17_38(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1188,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1188,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13014,7 +13030,7 @@ void SYS_2_17_39(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1189,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1189,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13033,7 +13049,7 @@ void SYS_2_17_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1190,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1190,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13052,7 +13068,7 @@ void SYS_2_17_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1191,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1191,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13071,7 +13087,7 @@ void SYS_2_17_42(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1192,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1192,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13090,7 +13106,7 @@ void SYS_2_17_43(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1193,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1193,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13109,7 +13125,7 @@ void SYS_2_17_44(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1194,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1194,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13128,7 +13144,7 @@ void SYS_2_17_45(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1195,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1195,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13147,7 +13163,7 @@ void SYS_2_17_46(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1196,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1196,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13166,7 +13182,7 @@ void SYS_2_17_47(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1197,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1197,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13185,7 +13201,7 @@ void SYS_2_17_48(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1198,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1198,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13204,7 +13220,7 @@ void SYS_2_17_49(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1199,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1199,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13223,7 +13239,7 @@ void SYS_2_17_50(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1200,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1200,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13242,7 +13258,7 @@ void SYS_2_17_51(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1201,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1201,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13263,7 +13279,7 @@ void SYS_2_18_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1260,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1260,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13282,7 +13298,7 @@ void SYS_2_18_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1261,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1261,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13301,7 +13317,7 @@ void SYS_2_18_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1262,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1262,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13320,7 +13336,7 @@ void SYS_2_18_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1263,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1263,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13339,7 +13355,7 @@ void SYS_2_18_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1264,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1264,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13358,7 +13374,7 @@ void SYS_2_18_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1265,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1265,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13377,7 +13393,7 @@ void SYS_2_18_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1266,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1266,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13396,7 +13412,7 @@ void SYS_2_18_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1267,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1267,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13415,7 +13431,7 @@ void SYS_2_18_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1268,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1268,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13434,7 +13450,7 @@ void SYS_2_18_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1269,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1269,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13454,7 +13470,7 @@ void SYS_2_18_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1270,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1270,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13473,7 +13489,7 @@ void SYS_2_18_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1271,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1271,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13492,7 +13508,7 @@ void SYS_2_18_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1272,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1272,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13511,7 +13527,7 @@ void SYS_2_18_13(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1273,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1273,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13530,7 +13546,7 @@ void SYS_2_18_14(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1274,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1274,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13549,7 +13565,7 @@ void SYS_2_18_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1275,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1275,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13568,7 +13584,7 @@ void SYS_2_18_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1276,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1276,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13587,7 +13603,7 @@ void SYS_2_18_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1277,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1277,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13606,7 +13622,7 @@ void SYS_2_18_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1278,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1278,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13625,7 +13641,7 @@ void SYS_2_18_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1279,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1279,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13646,7 +13662,7 @@ void SYS_2_18_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1280,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1280,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13665,7 +13681,7 @@ void SYS_2_18_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1281,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1281,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13684,7 +13700,7 @@ void SYS_2_18_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1282,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1282,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13703,7 +13719,7 @@ void SYS_2_18_23(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1283,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1283,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13722,7 +13738,7 @@ void SYS_2_18_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1284,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1284,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13741,7 +13757,7 @@ void SYS_2_18_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1285,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1285,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13760,7 +13776,7 @@ void SYS_2_18_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1286,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1286,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13779,7 +13795,7 @@ void SYS_2_18_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1287,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1287,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13798,7 +13814,7 @@ void SYS_2_18_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1288,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1288,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13817,7 +13833,7 @@ void SYS_2_18_29(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1289,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1289,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13838,7 +13854,7 @@ void SYS_2_18_30(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1290,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1290,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13857,7 +13873,7 @@ void SYS_2_18_31(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1291,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1291,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13876,7 +13892,7 @@ void SYS_2_18_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1292,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1292,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13895,7 +13911,7 @@ void SYS_2_18_33(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1293,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1293,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13914,7 +13930,7 @@ void SYS_2_18_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1294,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1294,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13933,7 +13949,7 @@ void SYS_2_18_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1295,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1295,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13952,7 +13968,7 @@ void SYS_2_18_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1296,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1296,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13971,7 +13987,7 @@ void SYS_2_18_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1297,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1297,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -13990,7 +14006,7 @@ void SYS_2_18_38(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1298,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1298,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14009,7 +14025,7 @@ void SYS_2_18_39(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1299,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1299,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14028,7 +14044,7 @@ void SYS_2_18_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1300,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1300,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14047,7 +14063,7 @@ void SYS_2_18_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1301,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1301,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14066,7 +14082,7 @@ void SYS_2_18_42(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1302,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1302,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14085,7 +14101,7 @@ void SYS_2_18_43(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1303,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1303,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14104,7 +14120,7 @@ void SYS_2_18_44(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1304,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1304,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14123,7 +14139,7 @@ void SYS_2_18_45(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1305,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1305,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14142,7 +14158,7 @@ void SYS_2_18_46(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1306,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1306,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14161,7 +14177,7 @@ void SYS_2_18_47(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1307,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1307,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14180,7 +14196,7 @@ void SYS_2_18_48(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1308,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1308,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14199,7 +14215,7 @@ void SYS_2_18_49(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1309,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1309,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14223,7 +14239,7 @@ void SYS_2_19_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1370,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1370,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14242,7 +14258,7 @@ void SYS_2_19_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1371,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1371,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14261,7 +14277,7 @@ void SYS_2_19_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1372,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1372,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14280,7 +14296,7 @@ void SYS_2_19_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1373,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1373,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14299,7 +14315,7 @@ void SYS_2_19_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1374,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1374,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14318,7 +14334,7 @@ void SYS_2_19_05(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1375,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1375,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14337,7 +14353,7 @@ void SYS_2_19_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1376,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1376,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14356,7 +14372,7 @@ void SYS_2_19_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1377,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1377,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14375,7 +14391,7 @@ void SYS_2_19_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1378,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1378,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14394,7 +14410,7 @@ void SYS_2_19_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1379,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1379,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14414,7 +14430,7 @@ void SYS_2_19_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1380,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1380,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14433,7 +14449,7 @@ void SYS_2_19_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1381,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1381,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14452,7 +14468,7 @@ void SYS_2_19_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1382,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1382,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14471,7 +14487,7 @@ void SYS_2_19_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1383,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1383,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14490,7 +14506,7 @@ void SYS_2_19_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1384,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1384,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14509,7 +14525,7 @@ void SYS_2_19_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1385,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1385,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14528,7 +14544,7 @@ void SYS_2_19_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1386,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1386,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14547,7 +14563,7 @@ void SYS_2_19_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1387,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1387,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14566,7 +14582,7 @@ void SYS_2_19_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1388,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1388,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14585,7 +14601,7 @@ void SYS_2_19_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1389,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1389,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14606,7 +14622,7 @@ void SYS_2_19_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1390,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1390,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14625,7 +14641,7 @@ void SYS_2_19_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1391,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1391,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14644,7 +14660,7 @@ void SYS_2_19_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1392,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1392,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14663,7 +14679,7 @@ void SYS_2_19_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1393,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1393,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14682,7 +14698,7 @@ void SYS_2_19_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1394,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1394,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14701,7 +14717,7 @@ void SYS_2_19_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1395,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1395,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14720,7 +14736,7 @@ void SYS_2_19_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1396,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1396,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14739,7 +14755,7 @@ void SYS_2_19_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1397,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1397,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14758,7 +14774,7 @@ void SYS_2_19_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1398,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1398,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14777,7 +14793,7 @@ void SYS_2_19_29(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1399,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1399,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14798,7 +14814,7 @@ void SYS_2_19_30(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1400,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1400,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14817,7 +14833,7 @@ void SYS_2_19_31(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1401,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1401,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14836,7 +14852,7 @@ void SYS_2_19_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1402,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1402,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14855,7 +14871,7 @@ void SYS_2_19_33(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1403,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1403,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14874,7 +14890,7 @@ void SYS_2_19_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1404,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1404,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14893,7 +14909,7 @@ void SYS_2_19_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1405,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1405,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14912,7 +14928,7 @@ void SYS_2_19_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1406,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1406,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14931,7 +14947,7 @@ void SYS_2_19_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1407,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1407,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14950,7 +14966,7 @@ void SYS_2_19_38(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1408,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1408,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14969,7 +14985,7 @@ void SYS_2_19_39(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1409,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1409,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -14988,7 +15004,7 @@ void SYS_2_19_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1410,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1410,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15007,7 +15023,7 @@ void SYS_2_19_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1411,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1411,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15029,7 +15045,7 @@ void SYS_2_20_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1460,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1460,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15048,7 +15064,7 @@ void SYS_2_20_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1461,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1461,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15067,7 +15083,7 @@ void SYS_2_20_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1462,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1462,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15086,7 +15102,7 @@ void SYS_2_20_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1463,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1463,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15105,7 +15121,7 @@ void SYS_2_20_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1464,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1464,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15124,7 +15140,7 @@ void SYS_2_20_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1465,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1465,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15143,7 +15159,7 @@ void SYS_2_20_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1466,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1466,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15162,7 +15178,7 @@ void SYS_2_20_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1467,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1467,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15181,7 +15197,7 @@ void SYS_2_20_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1468,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1468,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15200,7 +15216,7 @@ void SYS_2_20_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1469,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1469,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15220,7 +15236,7 @@ void SYS_2_20_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1470,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1470,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15239,7 +15255,7 @@ void SYS_2_20_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1471,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1471,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15258,7 +15274,7 @@ void SYS_2_20_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1472,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1472,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15277,7 +15293,7 @@ void SYS_2_20_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1473,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1473,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15296,7 +15312,7 @@ void SYS_2_20_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1474,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1474,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15315,7 +15331,7 @@ void SYS_2_20_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1475,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1475,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15334,7 +15350,7 @@ void SYS_2_20_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1476,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1476,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15353,7 +15369,7 @@ void SYS_2_20_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1477,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1477,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15372,7 +15388,7 @@ void SYS_2_20_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1478,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1478,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15391,7 +15407,7 @@ void SYS_2_20_19(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1479,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1479,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15412,7 +15428,7 @@ void SYS_2_20_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1480,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1480,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15431,7 +15447,7 @@ void SYS_2_20_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1481,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1481,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15450,7 +15466,7 @@ void SYS_2_20_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1482,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1482,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15469,7 +15485,7 @@ void SYS_2_20_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1483,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1483,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15488,7 +15504,7 @@ void SYS_2_20_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1484,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1484,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15507,7 +15523,7 @@ void SYS_2_20_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1485,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1485,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15526,7 +15542,7 @@ void SYS_2_20_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1486,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1486,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15545,7 +15561,7 @@ void SYS_2_20_27(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1487,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1487,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15564,7 +15580,7 @@ void SYS_2_20_28(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1488,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1488,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15583,7 +15599,7 @@ void SYS_2_20_29(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1489,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1489,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15605,7 +15621,7 @@ void SYS_2_20_30(void)
 
 	}
 	else
-	SYS_ParameterEdt(1490,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1490,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15624,7 +15640,7 @@ void SYS_2_20_31(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1491,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1491,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15643,7 +15659,7 @@ void SYS_2_20_32(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1492,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1492,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15662,7 +15678,7 @@ void SYS_2_20_33(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1493,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1493,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15681,7 +15697,7 @@ void SYS_2_20_34(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1494,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1494,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15700,7 +15716,7 @@ void SYS_2_20_35(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1495,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1495,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15719,7 +15735,7 @@ void SYS_2_20_36(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1496,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1496,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15738,7 +15754,7 @@ void SYS_2_20_37(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1497,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1497,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15757,7 +15773,7 @@ void SYS_2_20_38(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1498,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1498,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15776,7 +15792,7 @@ void SYS_2_20_39(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1499,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1499,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15795,7 +15811,7 @@ void SYS_2_20_40(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1500,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1500,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15814,7 +15830,7 @@ void SYS_2_20_41(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1501,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1501,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15837,7 +15853,7 @@ void SYS_2_21_00(void)
  		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1550,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1550,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15856,7 +15872,7 @@ void SYS_2_21_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1551,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1551,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15875,7 +15891,7 @@ void SYS_2_21_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1552,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1552,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15894,7 +15910,7 @@ void SYS_2_21_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1553,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1553,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15913,7 +15929,7 @@ void SYS_2_21_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1554,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1554,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15932,7 +15948,7 @@ void SYS_2_21_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1555,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1555,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15951,7 +15967,7 @@ void SYS_2_21_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1556,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1556,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15970,7 +15986,7 @@ void SYS_2_21_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1557,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1557,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -15989,7 +16005,7 @@ void SYS_2_21_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1558,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1558,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16008,7 +16024,7 @@ void SYS_2_21_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1559,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1559,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16028,7 +16044,7 @@ void SYS_2_21_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1560,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1560,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16047,7 +16063,7 @@ void SYS_2_21_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1561,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1561,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16066,7 +16082,7 @@ void SYS_2_21_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1562,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1562,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16085,7 +16101,7 @@ void SYS_2_21_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1563,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1563,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16104,7 +16120,7 @@ void SYS_2_21_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1564,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1564,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16123,7 +16139,7 @@ void SYS_2_21_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1565,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1565,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16151,7 +16167,7 @@ void SYS_2_22_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1570,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1570,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16170,7 +16186,7 @@ void SYS_2_22_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1571,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1571,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16189,7 +16205,7 @@ void SYS_2_22_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1572,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1572,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16208,7 +16224,7 @@ void SYS_2_22_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1573,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1573,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16227,7 +16243,7 @@ void SYS_2_22_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1574,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1574,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16246,7 +16262,7 @@ void SYS_2_22_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1575,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1575,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16265,7 +16281,7 @@ void SYS_2_22_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1576,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1576,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16284,7 +16300,7 @@ void SYS_2_22_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1577,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1577,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16303,7 +16319,7 @@ void SYS_2_22_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1578,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1578,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16330,7 +16346,7 @@ void SYS_2_23_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1590,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1590,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16349,13 +16365,13 @@ void SYS_2_23_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1591,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1591,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1591);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_23_XX[1][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_pu);
+		SYS_ParameterDisplay(MODE_1d_4u_pu);
 	}
 }
 void SYS_2_23_02(void)
@@ -16368,13 +16384,13 @@ void SYS_2_23_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1592,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1592,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1592);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_23_XX[2][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_pu);
+		SYS_ParameterDisplay(MODE_1d_4u_pu);
 	}
 }
 void SYS_2_23_03(void)
@@ -16387,13 +16403,13 @@ void SYS_2_23_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1593,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1593,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1593);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_23_XX[3][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_pu);
+		SYS_ParameterDisplay(MODE_1d_4u_pu);
 	}
 }
 void SYS_2_23_04(void)
@@ -16406,13 +16422,13 @@ void SYS_2_23_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1594,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1594,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1594);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_23_XX[4][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_pu);
+		SYS_ParameterDisplay(MODE_1d_4u_pu);
 	}
 }
 void SYS_2_23_05(void)
@@ -16425,13 +16441,13 @@ void SYS_2_23_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1595,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1595,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
 		Temporary = ReadDataMem(1595);
 		CLCD_string(0x80,(char*)_cpy_flash2memory(&PAGE_DIR_2_23_XX[5][0]));
-		SYS_ParameterDisplay(MODE_3d_1u_pu);
+		SYS_ParameterDisplay(MODE_1d_4u_pu);
 	}
 }
 void SYS_2_23_06(void)
@@ -16444,7 +16460,7 @@ void SYS_2_23_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1596,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1596,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16463,7 +16479,7 @@ void SYS_2_23_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1597,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1597,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16482,7 +16498,7 @@ void SYS_2_23_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1598,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1598,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16501,7 +16517,7 @@ void SYS_2_23_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1599,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1599,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16521,7 +16537,7 @@ void SYS_2_23_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1600,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1600,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16540,7 +16556,7 @@ void SYS_2_23_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1601,  edit_Temp, CURSOR_MODE_1);
+	SYS_ParameterEdt(1601,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16561,7 +16577,7 @@ void SYS_2_29_00(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1870,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1870,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16580,7 +16596,7 @@ void SYS_2_29_01(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1871,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1871,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16599,7 +16615,7 @@ void SYS_2_29_02(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1872,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1872,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16618,7 +16634,7 @@ void SYS_2_29_03(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1873,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1873,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16638,7 +16654,7 @@ void SYS_2_29_04(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1874,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1874,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16657,7 +16673,7 @@ void SYS_2_29_05(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1875,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1875,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16676,7 +16692,7 @@ void SYS_2_29_06(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1876,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1876,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16695,7 +16711,7 @@ void SYS_2_29_07(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1877,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1877,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16714,7 +16730,7 @@ void SYS_2_29_08(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1878,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1878,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16733,7 +16749,7 @@ void SYS_2_29_09(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1879,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1879,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16753,7 +16769,7 @@ void SYS_2_29_10(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1880,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1880,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16772,7 +16788,7 @@ void SYS_2_29_11(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1881,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1881,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16791,7 +16807,7 @@ void SYS_2_29_12(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1882,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1882,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16810,7 +16826,7 @@ void SYS_2_29_13(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1883,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1883,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16829,7 +16845,7 @@ void SYS_2_29_14(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1884,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1884,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16848,7 +16864,7 @@ void SYS_2_29_15(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1885,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1885,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16867,7 +16883,7 @@ void SYS_2_29_16(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1886,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1886,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16886,7 +16902,7 @@ void SYS_2_29_17(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1887,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1887,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16905,7 +16921,7 @@ void SYS_2_29_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1888,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1888,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16925,7 +16941,7 @@ void SYS_2_29_18(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1889,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1889,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16945,7 +16961,7 @@ void SYS_2_29_20(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1890,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1890,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16964,7 +16980,7 @@ void SYS_2_29_21(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1891,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1891,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -16983,7 +16999,7 @@ void SYS_2_29_22(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1892,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1892,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -17002,7 +17018,7 @@ void SYS_2_29_23(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1893,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1893,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -17021,7 +17037,7 @@ void SYS_2_29_24(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1894,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1894,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -17040,7 +17056,7 @@ void SYS_2_29_25(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1895,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1895,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -17059,7 +17075,7 @@ void SYS_2_29_26(void)
 		else if(KeyState.KeyValue == ENTER)SYS_AccessLevel_Mode( LEVEL_0);
 	}
 	else
-	SYS_ParameterEdt(1896,  edit_Temp, CURSOR_MODE_4);
+	SYS_ParameterEdt(1896,  edit_Temp, EDIT_MODE_4);
 
 	if(RefreshFlag)
 	{
@@ -19827,6 +19843,7 @@ const char* _TEXT(char const *format, ...)
 	va_list ap;
 
 	unsigned char markpluse=0;
+	unsigned char markminus=0;
 	unsigned char islong=0;
 	unsigned long u_val=0;
 	long s_val=0;
@@ -19965,12 +19982,13 @@ char* string = text_buf;
 
 					if(s_val < 0) //Value negativ ?
 					{
+						markminus = 1;
 						s_val = - s_val; //Make it positiv
 						//________________________________________________
-						string--;
+						//string--;
 
-						*string = '-';
-						string ++;
+						//*string = '-';
+						//string ++;
 						//________________________________________________
 
 					}
@@ -20021,7 +20039,14 @@ char* string = text_buf;
 
 				} while (u_val);
 
-				while(width--) *--ptr = fill; //insert padding chars		      
+				while(width--) *--ptr = fill; //insert padding chars	
+
+				if(markminus)
+				{
+					 *--ptr = '-';
+					 ptr++;
+				}
+				
 
 				while(*ptr) 
 				{
@@ -20116,7 +20141,7 @@ void MainSYSTEM(void)
 		PORTL_Bit2 = 1;
 	}
 //communication fault
-#if 0
+#if 1
 if(Communication_Fault_Flag)
 {
 	PORTL_Bit3 = 1;

@@ -1,4 +1,5 @@
----- MODE_3d_1u_mOhm Matches (3 in 1 files) ----
-Display.c (source\mcu):#define MODE_3d_1u_mOhm 62
-Display.c (source\mcu):	else if(mode == MODE_3d_1u_mOhm)
-Display.c (source\mcu):		SYS_ParameterDisplay(MODE_3d_1u_mOhm);
+---- SYS_0_2 Matches (4 in 2 files) ----
+Display.c (source\mcu):		MenuDisplay = SYS_0_2;
+Display.c (source\mcu):void SYS_0_2(void)
+Display.c (source\mcu):		else if(KeyState.KeyValue == DN)MenuDisplay = SYS_0_2;
+Display.h (source\mcu):	void 	SYS_0_2					(void);
